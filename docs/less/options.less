@@ -1,0 +1,50 @@
+.options {
+
+    list-style: none outside none;
+    margin-bottom: 20px;
+    overflow: hidden;
+    padding-bottom: 1px;
+    padding-left: 0;
+
+    li {
+        border: 1px solid darken(@well-bg, 7%);
+        border-radius: @border-radius-base;
+        float: left;
+        font-size: @font-size-base;
+        margin: 0 -1px -1px 0;
+        padding: @padding-large-vertical @padding-large-horizontal;
+        background-color: @body-bg;
+        text-align: center;
+        width: 10%;
+        margin-right: 2.5%;
+        height: 120px;
+
+        &:first-child {
+            margin-left: 1.25%;
+        }
+
+        &:last-child {
+            margin-right: 1.25%;
+        }
+
+        .glyphicon {
+            display: block;
+            font-size: @font-size-large;
+            margin: 5px auto 18px;
+        }
+
+        h3 {
+            margin: 5px auto 18px;
+            font-size: @font-size-large;
+        }
+
+        img {
+            display: block;
+            margin: 5px auto 12px;
+        }
+    }
+}
+
+.well .options {
+    margin-bottom: 0;
+}

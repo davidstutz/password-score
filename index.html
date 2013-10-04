@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Password Score</title>
+        <link rel="stylesheet" type="text/css" href="docs/css/bootstrap.css">
+        
+        <script type="text/javascript" src="docs/js/jquery.js"></script>
+        <script type="text/javascript" src="docs/js/jquery.tmpl.js"></script>
+        <script type="text/javascript" src="js/keyboard.js"></script>
+        <script type="text/javascript" src="js/score.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Password Score</h1>
+        </div>
+        <hr>
+        <script type="text/javascript">
+            
+            var dictionaries = {
+                'dictionaries': {
+                    'en': 'data/json/en.json',
+                    'de': 'data/json/de.json'
+                },
+                'countries': {
+                    'en' : 'countries-en',
+                    'de': 'countries-de'
+                },
+                'passwords': 'data/json/passwords.json',
+                'last': 'data/json/last.json',
+                'male': 'data/json/male.json',
+                'female': 'data/json/female.json',
+                'cities': 'data/json/cities.json',
+            };
+    
+            var colors = [
+                'red',
+                'blue',
+                'yellow',
+                'green',
+            ]
+            
+            function renderResult(score) {
+                var $container = $('.result');
+                var $ul = $('ul', $container).html('');
+                
+                $.template('match', '<li><span class="result-match">${match}</span><span class="result-entropy">${entropy}</span><span class="result-description">${description}</span></li>')
+                
+                var matches = score.cache.minimumMatches.reverse();
+                for (var i = 0; i < matches.length; i++) {
+                    
+                    $.tmpl('match', {
+                        match: matches[i].pattern,
+                        entropy: matches[i].entropy.toFixed(2),
+                        description: ''
+                    }).appendTo($ul);
+                }
+                
+                $container.show();
+            }
+        
+            $(document).ready(function() {
+                $.when(
+                        $.getJSON(dictionaries['dictionaries']['en']),
+                        $.getJSON(dictionaries['dictionaries']['de']),
+                        $.getJSON(dictionaries['last']),
+                        $.getJSON(dictionaries['male']),
+                        $.getJSON(dictionaries['female']),
+                        $.getJSON(dictionaries['cities']),
+                        $.getJSON(dictionaries['passwords'])
+                ).then(function(dictEN, dictDE, last, male, female, cities, passwords) {
+                    var options = [
+                        {'type': 'dictionary', 'dictionary': dictEN.shift(), 'key': 'en'},
+                        {'type': 'dictionary', 'dictionary': dictDE.shift(), 'key': 'de'},
+                        {'type': 'dictionary', 'dictionary': passwords.shift(), 'key': 'passwords'},
+                        {'type': 'dictionary', 'dictionary': last.shift(), 'key': 'last'},
+                        {'type': 'dictionary', 'dictionary': male.shift(), 'key': 'male'},
+                        {'type': 'dictionary', 'dictionary': female.shift(), 'key': 'female'},
+                        {'type': 'dictionary', 'dictionary': cities.shift(), 'key': 'cities'},
+                        {'type': 'keyboard', 'keyboard': QWERTY, 'key': 'qwerty'},
+                        {'type': 'keyboard', 'keyboard': QWERTZ, 'key': 'qwertz'},
+                        {'type': 'repitition', 'key': 'repitition'},
+                        {'type': 'sequences', 'key': 'sequences'},
+                        {'type': 'dates', 'key': 'dates'}
+                    ];
+                    
+                    $('#score').attr('disabled', false).removeClass('disabled');
+                    
+                    $('#score').on('click', function() {
+                    
+                        var password = $('#password').val();
+                        var score = new Score(password);
+
+                        var entropy = score.calculateEntropyScore(options);
+                        
+                        renderResult(score);
+                    });
+                });
+            })
+        </script>
+        <div class="stripe">
+            <div class="container">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button"><span class="glyphicon glyphicon-cog"></span></button>
+                    </span>
+                    <input type="text" class="form-control" id="password" placeholder="Enter your password..." />
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary disabled" id="score" type="button" disabled >Score</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="result" style="dispaly:none;">
+                <ul>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            <div class="well well-lg">
+                <ul class="options">
+                    <li>
+                        <span class="glyphicon glyphicon-book"></span>
+                        Dictionaries
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        Common Passwords
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-user"></span>
+                        Names
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-home"></span>
+                        Cities
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-calendar"></span>
+                        Dates
+                    </li>
+                    <li>
+                        <h3>1337</h3>
+                        Leet Speak
+                    </li>
+                    <li>
+                        <img src="docs/img/keyboard.png" />
+                        Keyboard Patterns
+                    </li>
+                    <li>
+                        <h3>123456</h3>
+                        Sequences/
+                        Repititions
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="container">
+            <p>
+				&copy; 2013
+				<a href="http://davidstutz.de">David Stutz</a> - <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</a>
+			</p>
+        </div>
+    </body>
+</html>
