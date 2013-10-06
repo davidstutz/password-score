@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Password Score</title>
+        <link rel="stylesheet" type="text/css" href="docs/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="docs/css/prettify.css">
+        
+        <script type="text/javascript" src="docs/js/jquery.js"></script>
+        <script type="text/javascript" src="docs/js/jquery.tmpl.js"></script>
+        <script type="text/javascript" src="docs/js/prettify.js"></script>
+        <script type="text/javascript" src="js/keyboard.js"></script>
+        <script type="text/javascript" src="js/score.js"></script>
+        <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+            });
+            
+            $(document).ready(function() {
+                window.prettyPrint() && prettyPrint();
+            });
+        </script>
+        
+    </head>
+    <body>
+        <a href="https://github.com/davidstutz/password-score"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+        <div class="container">
+            <h1>Password Score</h1>
+        </div>
+        <hr>
+        <div class="container">
+            <ul class="nav nav-pills">
+                <li><a href="index.html">Demo</a></li>
+                <li class="active"><a href="#">Documentation</a></li>
+            </ul>
+        </div>
+        <hr>
+        <div class="container">
+            <h2>Introduction</h2>
+            
+            <p>
+                Password Score is designed to give a realisitc estimation of the strength of a password. When speaking of &quot;strength&quot; we must ask for a measure. A common measure for this purpose is based on information theory and called entropy. We will define the entropy of a password as follows: when $N$ is the number of guesses needed to crack a password with certainty the entropy is given by the base-2 logarithm of $N$.
+            </p>
+            
+            <p>
+                A naive approach of estimating the number of guesses needed is using a brute-force approach. Given a password $p$ we take $N := n^{|p|}$ where $|p|$ is the length of $p$ and $n$ is the number of possible characters. The brute-force approach simply tries all possible combinations of $|p|$ characters. But due to human nature assuming a password to be a random sequence of characters is far to idealisitc. Most of us tend to choose passwords made up of common words, names, special numbers - passwords which are easy to remember. So the naive approach highly overestimates the strength of a password.
+            </p>
+            
+            <p>
+                Therefore every password cracking software uses dictionaries, lists of common passwords and names to give better performance. Password Score will search a given password for common words, passwords or names - or in general Password Score searches for <i>patterns</i> within the password. Other possible patterns are keyboard patterns like `qwerty` or sequences like `1234`. Instead of using random numbers we tend to use numbers which have a meaning like dates - birthdays or anniversaries of any kind.
+            </p>
+            
+            <h2>Pattern Matching</h2>
+            
+            <p>
+                To use Password Score simply fetch a password and create a <code>new Score()</code>:
+            </p>
+            
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var password = 'qwerty';
+var score = new Score(password);
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                To calculate the entropy we will use the <code>calculateEntropyScore(options)</code> method. This method requires some configuration as to which dictionaries to search, whether to search for keyboard patterns and so on.
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = {
+    'english' : {
+        'type': 'dictionary',
+        'dictionary': englishDictionary
+    },
+    'cpasswords': {
+        'type': 'dictionary',
+        'dictionary': commonPasswords
+    },
+    'keyboard': {
+        'type': 'keyboard',
+        'keyboard': QWERTY
+    }
+};
+console.log(score.calculateEntropyScore());
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                Based on the given options Password Score searches the password for all patterns it can find based on the given resources and calculates the entropy for all the patterns. Given a password consisting of $k$ non-overlapping patterns $p = p_1 \ldots p_k$ the entropy of $p$ is assumed to be the sum of the pattern entropies. Because we may have multiple overlapping patterns we then try to minimize the overall entropy as to underestimate the password rather than to overestimate it.
+            </p>
+            
+            <h2>Dictionaries</h2>
+            
+            <p>
+                As seen above Password Score can be configured to match against a given dictionary the following way:
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = {
+    // For using different dictionaries different keys can be used.
+    'english' : {
+        'type': 'dictionary',
+        'dictionary': englishDictionary
+    },
+};
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                A dictionary is simply a object where the keys represent the words, and the corresponding value represents a scoring value which is used to calculate the entropy of the word when considered as pattern. Dictionaries must not be common language dictionaries like english or german dictionaries. We can also use a list of common passwords or common names as dictionary:
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var englishDictionary = {
+    'you': 1,
+    // ... 
+    'housewife': 2154,
+};
+var commonPasswords = {
+    'passwords': 1,
+    // ... 
+    'd9ebk7': 8603,
+};
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                As mentioned above the scoring value will be used to determine the entropy by simply taking the base-2 logarithm. We will use the scoring value as to differentiate between very common patterns and less common patterns - <code>password</code> is the most ocmmon password whereas <code>d9ebk7</code> is not that common.
+            </p>
+            
+            <h2>Keyboard Patterns</h2>
+            
+            <p>
+                <code>qwerty</code> will always be within the top ten of the most common passwords simply because it is easy to remember on the corresponding keybaord. We will assume a keyboad pattern to be a path on the keyboard when considered as undirected graph. They QWERTY and QWERTZ keyboards are already given by <code>keyboard.js</code>:
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = {
+    'qwerty': {
+        'type': 'keyboard',
+        'keyboad': QWERTY
+    },
+    'qwertz': {
+        'type': 'keyboad',
+        'keyboard': QWERTZ
+    }
+};
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                Theoretically the entropy of a keyboad pattern is given by the number of possible beginnings multiplied by the number of possible next characters for each character within the pattern.
+            </p>
+            
+            <h2>Dates</h2>
+            
+            <p>
+                Dates are hard to catch because they may occur in many different formats. They may consist only of a day and a month or only of a month and a year. Years on its own are common, too - my first passwords contained the last two digits of my birthyear. Fortunately regular expressions can used to scan efficiently for the different formats of dates:
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+'(0?[1-9]|1[012])([\- \/.])?(0?[1-9]|[12][0-9]|3[01])([\- \/.])?([0-9]{4})' // Middle-endian, four digit year.
+'(0?[1-9]|[12][0-9]|3[01])([\- \/.])?(0?[1-9]|1[012])([\- \/.])?([0-9]{2})' // Little-endian, two digit year.
+// ...
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            
+        </div>
+        <hr>
+        <div class="container">
+            <p>
+				&copy; 2013
+				<a href="http://davidstutz.de">David Stutz</a> - <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</a>
+			</p>
+        </div>
+    </body>
+</html>

@@ -132,6 +132,17 @@ Score.prototype = {
     },
             
     /**
+     * Get the time to crack.
+     * 
+     * @param {number} entropy
+     * @param {number} cores
+     * @return {number}
+     */
+    calculateAverageTimeToCrack: function(entropy, cores) {
+        return 0.5*Math.pow(2, entropy)*0.005/cores;
+    },
+            
+    /**
      * Calculates a naive score ased on the brute force entropy.
      * 
      * @return {number}
