@@ -22,7 +22,7 @@ describe('Keyboard matching', function() {
         var keyMatches = score.collectKeyboardMatches(QWERTY);
         
         it ('[keyboard] "' + password + '" has one keyboard match', function() {
-            expect(Math.round(keyMatches.length)).toBe(1);
+            expect(keyMatches.length).toBe(1);
         });
     }
     

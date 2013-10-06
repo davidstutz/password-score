@@ -37,28 +37,27 @@ Score.prototype = {
     },
 
     leet: {
-        a: ['4', '@'],
-        b: ['8'],
-        c: ['(', '[', '<'],
-        // d: [],
-        e: ['3', '€'],
-        // f: [],
-        g: ['6', '9', '&'],
-        // h: [],
-        i: ['!', '|', '1'],
-        l: ['1', '|'],
-        // m: [],
-        n: ['2', '?'],
-        o: ['0', '9'],
-        r: ['2', '?'],
-        s: ['5', '$'],
-        t: ['7', '+'],
-        // u: [],
-        // v: [],
-        // w: [],
-        x: ['%'],
-        // y: [],
-        z: ['2']
+        '1': ['i', 'l'],
+        '2': ['n', 'r', 'z'],
+        '3': ['e'],
+        '4': ['a'],
+        '5': ['s'],
+        '6': ['g'],
+        '7': ['t'],
+        '8': ['b'],
+        '9': ['g', 'o'],
+        '0': ['o'],
+        '@': ['a'],
+        '(': ['c'],
+        '[': ['c'],
+        '<': ['c'],
+        '&': ['g'],
+        '!': ['i'],
+        '|': ['i', 'l'],
+        '?': ['n', 'r'],        
+        '$': ['s'],
+        '+': ['t'],
+        '%': ['x']
     },
 
     regex: {
@@ -352,35 +351,6 @@ Score.prototype = {
     },
 
     /**
-     * Check whether string ocurrs in leet speak in the given dictionary.
-     * 
-     * @param {array} dictionary
-     * @return {boolean}
-     */
-    collectDictionaryLeetSpeakMatches: function(dictionary) {
-        var matches = [];
-        for (var i = 0; i < this.password.length; i++) {
-            for (var j = i; j < this.password.length; j++) {
-                var original = this.password.substring(i, j + 1);
-                var string = original.toLowerCase();
-
-                // Leet speech match.
-                var subs = this.getLeetSpeakSubstitutions(string);
-                for (var k = 0; k < subs.length; k++) {
-                    if (subs[k] in dictionary) {
-                        matches[matches.length] = {
-                            pattern: original,
-                            entropy: this.calculateLeetSpeakEntropy(original, string, dictionary[string])
-                        };
-                    }
-                }
-            }
-        }
-        
-        return matches;
-    },
-
-    /**
      * Calculate dictionary entropy for leet speak.
      * 
      * @param {string} original
@@ -412,34 +382,41 @@ Score.prototype = {
      * @param {string} string
      * @return {array}
      */
-    getLeetSpeakSubstitutions: function(string) {
+    collectLeetSpeakSubstitutions: function() {
         var subs = [];
         
-        var depth = 0;
+        var leet = {};
         for (var char in this.leet) {
-            if (string.indexOf(char) >= 0) {
-                if (depth < this.leet[char].length) {
-                    depth = this.leet[char].length;
-                }
+            if (this.password.indexOf(char) >= 0) {
+                leet[char] = this.leet[char];
             }
         }
-        
-        for (var k = 0; k < depth; k++) {
-            var sub = string;
-            for (var i = 0; i < this.password.length; i++) {
-                if (sub[i] in this.leet) {
+       
+        var recursiveSubstitution = function(string) {
+            if (string[0] in leet) {
+                if (string.length === 1) {
+                    return leet[string[0]];
+                }
+                else {
+                    var substrings = recursiveSubstitution(string.substring(1, string.length));
                     
-                    // Find correct depth.
-                    var index = k;
-                    while (this.leet[sub[i]][index] === undefined) {
-                        index--;
+                    var subs = [];
+                    for (var i = 0; i < substrings.length; i++) {
+                        for (var j = 0; j < leet[string[0]].length; j++) {
+                            subs[subs.length] = leet[string[0]][j] + substrings[i];
+                        }
                     }
                     
-                    sub = sub.replace(sub[i], this.leet[sub[i]][index]);
+                    return subs;
                 }
             }
+            else {
+                return recursiveSubstitution(string.substring(1, string.length));
+            }
+        };
+        
+        for (var i = 0; i < this.password.length; i++) {
             
-            subs[subs.length] = string;
         }
 
         return subs;
