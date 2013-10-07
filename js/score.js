@@ -194,7 +194,7 @@ Score.prototype = {
                     break;
                 case 'leet':
                     if ('dictionary' in options[i]) {
-                        optionMatches = this.collectLeetSpeakSubstitutions(options[i]['dictionary']);
+                        optionMatches = this.collectLeetSpeakMatches(options[i]['dictionary']);
                     }
                     break;
                 case 'keyboard':
