@@ -8,7 +8,7 @@ Estimating the time to crack is still to be implemented. In addition there is st
 
 * `cities.txt`: [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/); [http://download.geonames.org/export/dump/](http://download.geonames.org/export/dump/)
 * `en.txt`/`de.txt`: [Creative Commons – Attribution / ShareAlike 3.0 license](http://creativecommons.org/licenses/by-sa/3.0/) ; [http://invokeit.wordpress.com/frequency-word-lists/](http://invokeit.wordpress.com/frequency-word-lists/)
-* `passwords.txt`: [https://xato.net/passwords/more-top-worst-passwords/#at_pco=smlwn-1.0&at_tot=1&at_ab=per-9&at_pos=0](https://xato.net/passwords/more-top-worst-passwords/#at_pco=smlwn-1.0&at_tot=1&at_ab=per-9&at_pos=0)
+* `passwords.txt`: [https://xato.net/passwords/more-top-worst-passwords/](https://xato.net/passwords/more-top-worst-passwords/)
 * `female.txt`, `male.txt` and `last.txt`: [http://deron.meranda.us/data/](http://deron.meranda.us/data/)
 * `countries-en`/`countries-de.txt`: [http://www.countries-list.info/](http://www.countries-list.info/)
 

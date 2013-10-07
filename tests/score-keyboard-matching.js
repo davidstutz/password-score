@@ -3,7 +3,7 @@ describe('Keyboard matching', function() {
     var keyboard = QWERTY.keyboard;
     var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     
-    for (var k = 0; k < 26; k++) {
+    for (var k = 0; k < 52; k++) {
         
         var password = '' + chars[Math.floor(Math.random()*(chars.length - 1))];
         var length = 2 + Math.floor(Math.random()*34);
@@ -27,7 +27,7 @@ describe('Keyboard matching', function() {
     }
     
     // Keyboard matches with "noise".
-    for (var k = 0; k < 26; k++) {
+    for (var k = 0; k < 52; k++) {
         
         var password = '' + chars[Math.floor(Math.random()*(chars.length - 1))];
         var length = 2 + Math.floor(Math.random()*34);
@@ -49,10 +49,10 @@ describe('Keyboard matching', function() {
         }
         
         var score = new Score(password);
-        var keyMatches = score.collectKeyboardMatches(QWERTY);
+        var keyNoiseMatches = score.collectKeyboardMatches(QWERTY);
         
         it ('[keyboard] "' + password + '" has keyboard matches', function() {
-            expect(keyMatches.length).not.toBe(0);
+            expect(keyNoiseMatches.length).not.toBe(0);
         });
     }
 });

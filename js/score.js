@@ -192,6 +192,11 @@ Score.prototype = {
                         optionMatches = this.collectDictionaryMatches(options[i]['dictionary']);
                     }
                     break;
+                case 'leet':
+                    if ('dictionary' in options[i]) {
+                        optionMatches = this.collectLeetSpeakSubstitutions(options[i]['dictionary']);
+                    }
+                    break;
                 case 'keyboard':
                     if ('keyboard' in options[i]) {
                         optionMatches = this.collectKeyboardMatches(options[i]['keyboard']);
@@ -282,7 +287,7 @@ Score.prototype = {
      * Check whether string ocurres in the dictionary.
      * 
      * @param {array} dictionary
-     * @return {boolean}
+     * @return {array}
      */
     collectDictionaryMatches: function(dictionary) {
         var matches = [];
@@ -351,6 +356,44 @@ Score.prototype = {
     },
 
     /**
+     * Search all leet speak matches.
+     * 
+     * @param {array} dictionary
+     * @return {array}
+     */
+    collectLeetSpeakMatches: function(dictionary) {
+        var matches = [];
+        
+        var subs = this.collectLeetSpeakSubstitutions(this.password);
+        
+        for (var k = 0; k < subs.length; k++) {
+            for (var i = 0; i < subs[k].length; i++) {
+                for (var j = i; j < subs[k].length; j++) {
+                    var original = subs[k].substring(i, j + 1);
+                    var string = original.toLowerCase();
+                    var reversed = this.getReversedString(string);
+                    
+                    if (string in dictionary) {
+                        matches[matches.length] = {
+                            pattern: original,
+                            entropy: this.calculateLeetSpeakEntropy(this.password.substring(i, j + 1), string, dictionary[string])
+                        };
+                    }
+
+                    if (reversed in dictionary) {
+                        matches[matches.length] = {
+                            pattern: original, 
+                            entropy: this.calculateReversedLeetSpeakEntropy(this.password.substring(i, j + 1), string, dictionary[string])
+                        };
+                    }
+                }
+            }
+        }
+        
+        return matches;
+    },
+
+    /**
      * Calculate dictionary entropy for leet speak.
      * 
      * @param {string} original
@@ -362,15 +405,26 @@ Score.prototype = {
         // Simple apporach: calculate possiblities of leet speak substitutions.
         var possibilities = 1;
         for (var key in this.leet) {
-            if (this.leet.hasOwnProperty(key)) {
-                if (word.indexOf(key) >= 0) {
-                    // Add the possiblity to not substitute.
-                    possibilities *= (this.leet[key].length + 1);
-                }
+            if (original.indexOf(key) >= 0) {
+                // Add the possiblity to not substitute.
+                possibilities *= (this.leet[key].length + 1);
             }
         }
 
         return this.calculateDictionaryEntropy(original, word, rank) + this.lg(possibilities);
+    },
+            
+    /**
+     * Calculate leet speak entropy for reversed.
+     * 
+     * @param {string} original
+     * @param {string} word
+     * @param {number} rank
+     * @return {number}
+     */
+    calculateReversedLeetSpeakEntropy: function(original, word, rank) {
+        // Two possibilities: reversed or not => 1 bit of extra entropy.
+        return this.calculateLeetSpeakEntropy(original, word, rank) + 1;
     },
     
     /**
@@ -392,13 +446,13 @@ Score.prototype = {
             }
         }
        
-        var recursiveSubstitution = function(string) {
+        var recursiveSubstitutions = function(string) {
             if (string[0] in leet) {
                 if (string.length === 1) {
                     return leet[string[0]];
                 }
                 else {
-                    var substrings = recursiveSubstitution(string.substring(1, string.length));
+                    var substrings = recursiveSubstitutions(string.substring(1, string.length));
                     
                     var subs = [];
                     for (var i = 0; i < substrings.length; i++) {
@@ -411,15 +465,23 @@ Score.prototype = {
                 }
             }
             else {
-                return recursiveSubstitution(string.substring(1, string.length));
+                if (string.length === 1) {
+                    return [string[0]];
+                }
+                else {
+                    var substrings = recursiveSubstitutions(string.substring(1, string.length));
+
+                    var subs = [];
+                    for (var i = 0; i < substrings.length; i++) {
+                        subs[subs.length] = string[0] + substrings[i];
+                    }
+
+                    return subs;
+                }
             }
         };
-        
-        for (var i = 0; i < this.password.length; i++) {
-            
-        }
 
-        return subs;
+        return recursiveSubstitutions(this.password);
     },
 
     /**

@@ -197,7 +197,78 @@ var options = {
         
         <div class="container">
             <p>
-                The number of possible dates is dependant on the format. In general we simply take $31 \cdot 12 \cdot y$ where $y$ is the number of years to consider. When assuming $y$ to be too large we will not get any difference from considering a random eight (or six) digit number with $10^8$ respectively $10^6$ possible combinations. Thererfore choosing $y$ to be around $100$ to $200$ will be a good and realistic choice.
+                The number of possible dates is dependant on the format. In general we simply take $31 \cdot 12 \cdot y$ where $y$ is the number of years to consider. When assuming $y$ to be too large we will not get any difference from considering a random eight (or six) digit number with $10^8$ respectively $10^6$ possible combinations. Thererfore choosing $y$ to be around $100$ or $200$ will be a good and realistic choice.
+            </p>
+            
+            <h2>1337 - Leet Speak</h2>
+            
+            <p>
+                Using a leet speak translation table Password Score can search dictionaries for words which occur in leet speak within the password. This translation table looks like this:
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+leet = {
+    '1': ['i', 'l'],
+    '2': ['n', 'r', 'z'],
+    '3': ['e'],
+    '4': ['a'],
+    '5': ['s'],
+    '6': ['g'],
+    '7': ['t'],
+    '8': ['b'],
+    '9': ['g', 'o'],
+    '0': ['o'],
+    '@': ['a'],
+    '(': ['c'],
+    '[': ['c'],
+    '<': ['c'],
+    '&': ['g'],
+    '!': ['i'],
+    '|': ['i', 'l'],
+    '?': ['n', 'r'],        
+    '$': ['s'],
+    '+': ['t'],
+    '%': ['x']
+};
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">  
+            
+            <p>
+                Given a word in leet speak Password Score generates a list of all possible substitutions using the translation table. All possible substitutions are matched against a given dictionary. The entropy can be calculated by determining the number of possible leet speak versions of the dictionary word. 
+            </p>
+            
+            <h2>Sequences and Repititions</h2>
+            
+            <p>
+                Password Score searches for number sequences and substrings of the alphabet. Reversed sequences are checked, too. The entropy of a sequence is only influenced by the possiblities for the first character and the length.
+            </p>
+            
+            <p>
+                The entropy of single character repitions is determined the same way as for sequences.
+            </p>
+            
+            <h2>Data Sources</h2>
+            
+            <p>
+                As Password Score works best when using in combination with usual dictionaries, list of common passwords and names it already includes some raw data:
+            </p>
+            
+            <ul>
+                <li><a href="http://invokeit.wordpress.com/frequency-word-lists/" target="_blank">Hermit Dave's &quot;Frequency Word Lists&quot;</a> are quite useful as a replacement for usual dictionaries as they also include spoken language: 
+                <li><a href="https://xato.net/passwords/more-top-worst-passwords/" target="_blank">Mark Burnett's &quot;10,000 Top Passwords&quot;</a> can be used to identify common passwords.</li>
+                <li>Lists of common female and male names as well as last names can be taken from the <a href="http://deron.meranda.us/data/" target="_blank">US Census Data</a> from 1990.</li>
+                <li>Lists of countries in all languages can be found <a href="http://www.countries-list.info/" target="_blank">here</a>.
+                <li><a href="http://www.geonames.org/" target="_blank">GeoNames.org</a> provides lists of cities <a href="http://download.geonames.org/export/dump/" target="_blank">here</a>. As only a few city names are being translated among languages these lists will work language independant.</li>
+            </ul>
+            
+            <p>
+                For using the raw data a simple PHP script can be used to generate JSON files with the appropriate format.
             </p>
         </div>
         <hr>
