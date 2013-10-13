@@ -8,6 +8,12 @@
         <script type="text/javascript" src="docs/js/jquery.tmpl.js"></script>
         <script type="text/javascript" src="js/keyboard.js"></script>
         <script type="text/javascript" src="js/score.js"></script>
+        <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+            });
+        </script>
     </head>
     <body>
         <a href="https://github.com/davidstutz/password-score"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
@@ -111,6 +117,11 @@
                 });
             })
         </script>
+        <div class="container">
+            <p class="alert alert-info">
+                Enter a password. <b>Password Score</b> will give a realistic estimation of its strength expressed in entropy. Let $h$ be the entropy of the password, then a cracker does not need to try more than $2^h$ different passwords before finding the correct one.
+            </p>
+        </div>
         <div class="stripe">
             <div class="container">
                 <div class="input-group">
