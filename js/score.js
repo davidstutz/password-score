@@ -373,16 +373,18 @@ Score.prototype = {
                     var string = original.toLowerCase();
                     var reversed = this.getReversedString(string);
                     
+                    var originalPattern = this.password.substring(i, j + 1);
+                    
                     if (string in dictionary) {
                         matches[matches.length] = {
-                            pattern: original,
+                            pattern: originalPattern,
                             entropy: this.calculateLeetSpeakEntropy(this.password.substring(i, j + 1), string, dictionary[string])
                         };
                     }
 
                     if (reversed in dictionary) {
                         matches[matches.length] = {
-                            pattern: original, 
+                            pattern: originalPattern, 
                             entropy: this.calculateReversedLeetSpeakEntropy(this.password.substring(i, j + 1), string, dictionary[string])
                         };
                     }

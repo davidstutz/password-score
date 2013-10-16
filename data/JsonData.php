@@ -105,4 +105,4 @@ class JsonData {
 
 $root = realpath(dirname(__FILE__));
 $jsonData = new JsonData($root . DIRECTORY_SEPARATOR . 'raw');
-echo $jsonData->createJsonDictionary(25000, 'passwords', 'txt');
+echo $jsonData->createJsonDictionary(25000, 'countries-de', 'txt');

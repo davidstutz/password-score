@@ -36,8 +36,8 @@
                     'de': 'data/json/de.json'
                 },
                 'countries': {
-                    'en' : 'countries-en',
-                    'de': 'countries-de'
+                    'en' : 'data/json/countries-en.json',
+                    'de': 'data/json/countries-de.json'
                 },
                 'passwords': 'data/json/passwords.json',
                 'last': 'data/json/last.json',
@@ -56,8 +56,10 @@
             function renderResult(score) {
                 var $container = $('.result');
                 var $ul = $('ul', $container).html('');
+                var $crack = $('.crack', $container).text('');
                 
                 $.template('match', '<li><span class="result-match">${match}</span><span class="result-entropy">${entropy}</span><span class="result-description">${description}</span></li>')
+                $.template('sum', '<li><span class="result-match">&sum;</span><span class="result-entropy">${entropy}</span></li>')
                 
                 var matches = score.cache.minimumMatches.reverse();
                 for (var i = 0; i < matches.length; i++) {
@@ -68,6 +70,12 @@
                         description: ''
                     }).appendTo($ul);
                 }
+                
+                $.tmpl('sum', {
+                    entropy: score.cache.entropy.toFixed(2)
+                }).appendTo($ul);
+                
+                $crack.text('Cracked within ' + score.calculateAverageTimeToCrack(score.cache.entropy, 4).toFixed(2) + ' seconds using 4 parallel cores ...');
                 
                 $container.show();
             }
@@ -80,8 +88,10 @@
                         $.getJSON(dictionaries['male']),
                         $.getJSON(dictionaries['female']),
                         $.getJSON(dictionaries['cities']),
-                        $.getJSON(dictionaries['passwords'])
-                ).then(function(dictEN, dictDE, last, male, female, cities, passwords) {
+                        $.getJSON(dictionaries['passwords']),
+                        $.getJSON(dictionaries['countries']['en']),
+                        $.getJSON(dictionaries['countries']['de'])
+                ).then(function(dictEN, dictDE, last, male, female, cities, passwords, countriesEN, countriesDE) {
                     var options = [
                         {'type': 'dictionary', 'dictionary': dictEN[0], 'key': 'en'},
                         {'type': 'dictionary', 'dictionary': dictDE[0], 'key': 'de'},
@@ -90,12 +100,16 @@
                         {'type': 'dictionary', 'dictionary': male[0], 'key': 'male'},
                         {'type': 'dictionary', 'dictionary': female[0], 'key': 'female'},
                         {'type': 'dictionary', 'dictionary': cities[0], 'key': 'cities'},
-                        {'type': 'leet', 'dictionary': dictEN[0], 'key': 'en'},
-                        {'type': 'leet', 'dictionary': dictDE[0], 'key': 'de'},
-                        {'type': 'leet', 'dictionary': last[0], 'key': 'last'},
-                        {'type': 'leet', 'dictionary': male[0], 'key': 'male'},
-                        {'type': 'leet', 'dictionary': female[0], 'key': 'female'},
-                        {'type': 'leet', 'dictionary': cities[0], 'key': 'cities'},
+                        {'type': 'dictionary', 'dictionary': countriesEN[0], 'key': 'countriesen'},
+                        {'type': 'dictionary', 'dictionary': countriesDE[0], 'key': 'countriesde'},
+                        {'type': 'leet', 'dictionary': dictEN[0], 'key': 'leeten'},
+                        {'type': 'leet', 'dictionary': dictDE[0], 'key': 'leetde'},
+                        {'type': 'leet', 'dictionary': last[0], 'key': 'leetlast'},
+                        {'type': 'leet', 'dictionary': male[0], 'key': 'leetmale'},
+                        {'type': 'leet', 'dictionary': female[0], 'key': 'leetfemale'},
+                        {'type': 'leet', 'dictionary': cities[0], 'key': 'leetcities'},
+                        {'type': 'leet', 'dictionary': countriesEN[0], 'key': 'leetcountriesen'},
+                        {'type': 'leet', 'dictionary': countriesDE[0], 'key': 'leetcountriesde'},
                         {'type': 'keyboard', 'keyboard': QWERTY, 'key': 'qwerty'},
                         {'type': 'keyboard', 'keyboard': QWERTZ, 'key': 'qwertz'},
                         {'type': 'repitition', 'key': 'repitition'},
@@ -114,6 +128,13 @@
                         
                         renderResult(score);
                     });
+                    
+                    $('.password').on('click', function(event) {
+                        event.preventDefault();
+                        
+                        $('#password').val($(this).data('value'));
+                        $('#score').click();
+                    })
                 });
             })
         </script>
@@ -121,6 +142,17 @@
             <p class="alert alert-info">
                 Enter a password. <b>Password Score</b> will give a realistic estimation of its strength expressed in entropy. Let $h$ be the entropy of the password, then a cracker does not need to try more than $2^h$ different passwords before finding the correct one.
             </p>
+        </div>
+        <div class="container">
+            <div class="result" style="display:none;">
+                <ul>
+                    
+                </ul>
+                <div class="clearfix"></div>
+                <div class="crack">
+                    
+                </div>
+            </div>
         </div>
         <div class="stripe">
             <div class="container">
@@ -133,13 +165,58 @@
             </div>
         </div>
         <div class="container">
-            <div class="result" style="dispaly:none;">
-                <ul>
-                    
-                </ul>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="examples">
+                        <p>
+                            <a href="#" class="password" data-value="qwerty">qwerty</a>
+                            <a href="#" class="password" data-value="password">password</a>
+                            <a href="#" class="password" data-value="test1234">test1234</a>
+                            <a href="#" class="password" data-value="admin123">admin123</a>
+                            <a href="#" class="password" data-value="letmein">letmein</a>
+                            <a href="#" class="password" data-value="87654321">87654321</a>
+                            <a href="#" class="password" data-value="87654321">87654321</a>
+                            <a href="#" class="password" data-value="elliotreed">elliotreed</a>
+                            <a href="#" class="password" data-value="asdfqwer">asdfqwer</a>
+                            <a href="#" class="password" data-value="777777">777777</a>
+                            <a href="#" class="password" data-value="password1">password1</a>
+                            <a href="#" class="password" data-value="liverpool">liverpool</a>
+                            <a href="#" class="password" data-value="qwerty12">qwerty12</a>
+                            <a href="#" class="password" data-value="office">office</a>
+                            <a href="#" class="password" data-value="kristina">kristina</a>
+                            <a href="#" class="password" data-value="qwertyuiop">qwertyuiop</a>
+                            <a href="#" class="password" data-value="Bangladesh">Bangladesh</a>
+                            <a href="#" class="password" data-value="Greenland">Greenland</a>
+                            <a href="#" class="password" data-value="Germany">Germany</a>
+                            <a href="#" class="password" data-value="Berlin">Berlin</a>
+                            <a href="#" class="password" data-value="Hannover">Hannover</a>
+                            <a href="#" class="password" data-value="Cambridge">Cambridge</a>
+                            <a href="#" class="password" data-value="computerscience">computerscience</a>
+                            <a href="#" class="password" data-value="ilovecomputerscience">ilovecomputerscience</a>
+                            <a href="#" class="password" data-value="ichliebeinformatik">ichliebeinformatik</a>
+                            <a href="#" class="password" data-value="qwertyuiop">qwertyuiop</a>
+                            <a href="#" class="password" data-value="Bangladesh">Bangladesh</a>
+                            <a href="#" class="password" data-value="!$Gr33nland123">!$Gr33nland123</a>
+                            <a href="#" class="password" data-value="!G3rm4ny223">!G3rm4ny223</a>
+                            <a href="#" class="password" data-value="B3rl!n">B3rl!n</a>
+                            <a href="#" class="password" data-value="CoMpUtErScIeNcE">CoMpUtErScIeNcE</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="introduction">
+                        <p>
+                            <b>Password Score</b> is designed to estimate the strength of a password as realistic as possible. The strength of a password will be expressed in the means of entropy. When given the entropy of a password the time to crack can easily be calculated. For giving a realistic estimation Password Score searches the password for patterns like englisch words, common passwords, names or even keyboard patterns.
+                        </p>
+                        <p>
+                            Password Score is no graphical strength meter - it only provides a javascript library to estimate the strength of passwords expressed in entropy.
+                        </p>
+                        <p>
+                            Password Score is available on <a href="https://github.com/davidstutz/password-score">GitHub</a> and an further introduction can be found <a href="docs.html">here</a>
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="container">
             <div class="well well-lg">
                 <ul class="options">
                     <li>

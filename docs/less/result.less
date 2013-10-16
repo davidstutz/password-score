@@ -1,10 +1,8 @@
 .result {
-    float: left;
     width: 100%;
-    overflow: hidden;
     position: relative;
     margin-bottom: 12px;
-    
+
     ul {
         clear: left;
         float: left;
@@ -51,4 +49,23 @@
             }
         }
     }
+
+    .crack {
+        text-align: center;
+        font-size: ceil(@font-size-base * 1.1);
+    }
+}
+
+.examples {
+    border: 1px solid darken(@well-bg, 7%);
+    padding: @padding-small-vertical @padding-small-horizontal;
+    margin-bottom: 12px;
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.introduction {
+    margin-bottom: 12px;
 }
