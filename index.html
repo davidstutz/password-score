@@ -75,7 +75,31 @@
                     entropy: score.cache.entropy.toFixed(2)
                 }).appendTo($ul);
                 
-                $crack.text('Cracked within ' + score.calculateAverageTimeToCrack(score.cache.entropy, 4).toFixed(2) + ' seconds using 4 parallel cores ...');
+                var cores = 4;
+                var timeToCrack = score.calculateAverageTimeToCrack(score.cache.entropy, cores);
+                var unit = 'seconds';
+                
+                if (timeToCrack > 60) {
+                    timeToCrack /= 60;
+                    unit = 'minutes';
+                    
+                    if (timeToCrack > 60) {
+                        timeToCrack /= 60;
+                        unit = 'hours';
+
+                        if (timeToCrack > 24) {
+                            timeToCrack /= 24;
+                            unit = 'days';
+                            
+                            if (timeToCrack > 365) {
+                                timeToCrack /= 365;
+                                unit = 'years';
+                            }
+                        }
+                    }
+                }
+                
+                $crack.text('Cracked on average within ' + timeToCrack.toFixed(2) + ' ' + unit + ' using ' + cores + ' parallel cores ...');
                 
                 $container.show();
             }
@@ -112,6 +136,7 @@
                         {'type': 'leet', 'dictionary': countriesDE[0], 'key': 'leetcountriesde'},
                         {'type': 'keyboard', 'keyboard': QWERTY, 'key': 'qwerty'},
                         {'type': 'keyboard', 'keyboard': QWERTZ, 'key': 'qwertz'},
+                        {'type': 'keyboard', 'keyboard': Numpad, 'key': 'numpad'},
                         {'type': 'repitition', 'key': 'repitition'},
                         {'type': 'sequences', 'key': 'sequences'},
                         {'type': 'dates', 'key': 'dates'}
@@ -176,7 +201,7 @@
                             <a href="#" class="password" data-value="letmein">letmein</a>
                             <a href="#" class="password" data-value="87654321">87654321</a>
                             <a href="#" class="password" data-value="87654321">87654321</a>
-                            <a href="#" class="password" data-value="elliotreed">elliotreed</a>
+                            <a href="#" class="password" data-value="elliotreed">elliotsmith</a>
                             <a href="#" class="password" data-value="asdfqwer">asdfqwer</a>
                             <a href="#" class="password" data-value="777777">777777</a>
                             <a href="#" class="password" data-value="password1">password1</a>
@@ -200,6 +225,8 @@
                             <a href="#" class="password" data-value="!G3rm4ny223">!G3rm4ny223</a>
                             <a href="#" class="password" data-value="B3rl!n">B3rl!n</a>
                             <a href="#" class="password" data-value="CoMpUtErScIeNcE">CoMpUtErScIeNcE</a>
+                            <a href="#" class="password" data-value="qayxswedcvfr">qayxswedcvfr</a>
+                            <a href="#" class="password" data-value="123698745">123698745</a>
                         </p>
                     </div>
                 </div>

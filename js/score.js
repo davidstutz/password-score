@@ -137,7 +137,7 @@ Score.prototype = {
      * @param {number} cores
      * @return {number}
      */
-    calculateAverageTimeToCrack: function(entropy, cores) {
+    calculateAverageTimeToCrack: function(entropy, cores) {console.log(cores);
         return 0.5*Math.pow(2, entropy)*0.005/cores;
     },
             
@@ -146,26 +146,26 @@ Score.prototype = {
      * 
      * @return {number}
      */
-    calculateBruteForceEntropy: function() {
+    calculateBruteForceEntropy: function(password) {
         var base = 0;
 
-        if (this.regex['lower'].test(this.password)) {
+        if (this.regex['lower'].test(password)) {
             base += this.LOWER;
         }
 
-        if (this.regex['upper'].test(this.password)) {
+        if (this.regex['upper'].test(password)) {
             base += this.UPPER;
         }
 
-        if (this.regex['number'].test(this.password)) {
+        if (this.regex['number'].test(password)) {
             base += this.NUMBER;
         }
 
-        if (this.regex['punctuation'].test(this.password)) {
+        if (this.regex['punctuation'].test(password)) {
             base += this.PUNCTUATION;
         }
-
-        return this.lg(base)*this.password.length;
+        
+        return this.lg(base)*password.length;
     },
 
     /**
@@ -231,22 +231,29 @@ Score.prototype = {
      */
     calculateEntropyScore: function(options) {
         var matches = this.collectMatches(options);
-
+        
         var entropies = [];
         var entropyMatches = [];
         
         // Minimize entropy as far as possible. This approach assumes the attacker
         // to know as much as possible about the form of the password.
         for (var i = 0; i < this.password.length; i++) {
-            entropies[i] = this.calculateBruteForceEntropy(this.password[i]); // Base bruteforce entropy.
-
-            if (i > 0) {
-                entropies[i] += entropies[i - 1];
-            }
+            
+            // Add current character as match.
+            // If the character is not found within a pattern this will be taken.
+            matches[matches.length] = {
+                pattern: this.password[i],
+                entropy: this.calculateBruteForceEntropy(this.password[i]),
+                start: i,
+                end: i
+            };
+            
+            // Set to infinity - we want to minimize the entropy.
+            entropies[i] = Number.POSITIVE_INFINITY;
 
             for (var j = 0; j < matches.length; j++) {
-                var start = this.password.indexOf(matches[j]['pattern']);
-                var end = start + matches[j]['pattern'].length - 1;
+                var start = matches[j]['start'];
+                var end = matches[j]['end'];
 
                 if (end !== i) {
                     continue;
@@ -270,7 +277,7 @@ Score.prototype = {
         while (i >= 0) {
             if (entropyMatches[i]) {
                 minimumMatches[minimumMatches.length] = entropyMatches[i];
-                i = this.password.indexOf(entropyMatches[i].pattern) - 1;
+                i = entropyMatches[i]['start'] - 1;
             }
             else {
                 i--;
@@ -301,7 +308,9 @@ Score.prototype = {
                 if (string in dictionary) {
                     matches[matches.length] = {
                         pattern: original,
-                        entropy: this.calculateDictionaryEntropy(original, string, dictionary[string])
+                        entropy: this.calculateDictionaryEntropy(original, string, dictionary[string]),
+                        start: i,
+                        end: j
                     };
                 }
 
@@ -309,7 +318,9 @@ Score.prototype = {
                 if (reversed in dictionary) {
                     matches[matches.length] = {
                         pattern: original, 
-                        entropy: this.calculateReversedDictionaryEntropy(original, string, dictionary[string])
+                        entropy: this.calculateReversedDictionaryEntropy(original, string, dictionary[string]),
+                        start: i,
+                        end: j
                     };
                 }
             }
@@ -378,14 +389,18 @@ Score.prototype = {
                     if (string in dictionary) {
                         matches[matches.length] = {
                             pattern: originalPattern,
-                            entropy: this.calculateLeetSpeakEntropy(this.password.substring(i, j + 1), string, dictionary[string])
+                            entropy: this.calculateLeetSpeakEntropy(this.password.substring(i, j + 1), string, dictionary[string]),
+                            start: i,
+                            end: j
                         };
                     }
 
                     if (reversed in dictionary) {
                         matches[matches.length] = {
                             pattern: originalPattern, 
-                            entropy: this.calculateReversedLeetSpeakEntropy(this.password.substring(i, j + 1), string, dictionary[string])
+                            entropy: this.calculateReversedLeetSpeakEntropy(this.password.substring(i, j + 1), string, dictionary[string]),
+                            start: i,
+                            end: j
                         };
                     }
                 }
@@ -496,6 +511,7 @@ Score.prototype = {
         var matches = [];
         var currentPath = this.password[0];
         var currentTurns = 0;
+        var currentStart = 0;
 
         // Keyboard automatically takes care of lower and upper case and special characters.
         for (var i = 0; i < this.password.length - 1; i++) {
@@ -507,11 +523,14 @@ Score.prototype = {
             }
             else {
                 matches[matches.length] = {
-                        pattern: currentPath,
-                        entropy: this.calculateKeyboardEntropy(currentPath, currentTurns, keyboard)
+                    pattern: currentPath,
+                    entropy: this.calculateKeyboardEntropy(currentPath, currentTurns, keyboard),
+                    start: currentStart,
+                    end: i
                 };
                 currentPath = this.password[i + 1];
                 currentTurns = 0;
+                currentStart = i + 1;
             }
         }
         
@@ -519,7 +538,9 @@ Score.prototype = {
         if (currentPath.length > 0) {
             matches[matches.length] = {
                 pattern: currentPath,
-                entropy: this.calculateKeyboardEntropy(currentPath, currentTurns, keyboard)
+                entropy: this.calculateKeyboardEntropy(currentPath, currentTurns, keyboard),
+                start: currentStart,
+                end: this.password.length
             };
         }
         
@@ -565,7 +586,19 @@ Score.prototype = {
         for (var i = 0; i < singleMatches.length; i++) {
             matches[matches.length] = {
                 pattern: singleMatches[i],
-                entropy: this.calculateSingleRepititionEntropy(singleMatches[i])
+                entropy: this.calculateSingleRepititionEntropy(singleMatches[i]),
+                start: this.password.indexOf(singleMatches[i]),
+                end: this.password.indexOf(singleMatches[i]) + singleMatches[i].length - 1
+            };
+        }
+        
+        var groupMatches = this.password.match(this.regex['repitition']['group']) || [];
+        for (var i = 0; i < groupMatches.length; i++) {
+            matches[matches.length] = {
+                pattern: groupMatches[i],
+                entropy: this.calculateGroupRepititionEntropy(groupMatches[i]),
+                start: this.password.indexOf(groupMatches[i]),
+                end: this.password.indexOf(groupMatches[i]) + groupMatches[i].length - 1
             };
         }
         
@@ -591,7 +624,38 @@ Score.prototype = {
 
         return this.calculateBruteForceEntropy(original);
     },
+    
+    /**
+     * Calculate repition entropy for groups.
+     * 
+     * @param {string} original substring
+     * @return {number}
+     */
+    calculateGroupRepititionEntropy: function(original) {
+        
+        // First determine the length of the repeated string.
+        var result = this.regex['repitition']['group'].exec(original);
+        var length = original.length;
+        
+        while (result != null) {
+            length = result[1].length;
+            result = this.regex['repitition']['group'].exec(result[1]);
+        }
+        
+        var possibilities = 0;
+        if (this.regex['number'].test(original)) {
+            possibilities += this.NUMBER;
+        }
+        if (this.regex['lower'].test(original) || this.regex['upper'].test(original)) {
+            possibilities += this.LOWER;
+        }
+        if (this.regex['punctuation'].test(original)) {
+            possibilities += this.PUNCTUATION;
+        }
 
+        return this.lg(possibilities)*length;
+    },
+    
     /**
      * Check for sequences.
      * 

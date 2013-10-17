@@ -94,21 +94,21 @@ var score = new Score(password);
         <div class="stripe">
             <div class="container">
 <pre class="prettyprint">
-var options = {
-    'english' : {
+var options = [
+    {
         'type': 'dictionary',
         'dictionary': englishDictionary
     },
-    'cpasswords': {
+    {
         'type': 'dictionary',
         'dictionary': commonPasswords
     },
-    'keyboard': {
+    {
         'type': 'keyboard',
         'keyboard': QWERTY
     }
-};
-console.log(score.calculateEntropyScore());
+];
+console.log(score.calculateEntropyScore(options));
 </pre>
             </div>
         </div>
@@ -118,6 +118,31 @@ console.log(score.calculateEntropyScore());
                 Based on the given options Password Score searches the password for all patterns it can find based on the given resources and calculates the entropy for all the patterns. Given a password consisting of $k$ non-overlapping patterns $p = p_1 \ldots p_k$ the entropy of $p$ is assumed to be the sum of the pattern entropies. Because we may have multiple overlapping patterns we then try to minimize the overall entropy as to underestimate the password rather than to overestimate it.
             </p>
             
+            <p>
+                Beneath returning the password entropy, <code>score.calculateEntropyScore(options)</code> caches all found patterns and their entropies. 
+            </p>
+            
+        </div>
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = [
+    {
+        'type': 'dictionary',
+        'dictionary': englishDictionary,
+        'key': 'english' // Key to access found patterns.
+     }
+];
+console.log(score.calculateEntropyScore(options));
+// These are the patterns which contribute to the minimum entropy:
+console.log(score.cache.minimumMatches);
+// The patterns found within the english dictionary can be accesed via:
+console.log(score.cache.english);
+</pre>
+            </div>
+        </div>
+        
+        <div class='container'>
             <h2><a id="dictionaries"></a>Dictionaries</h2>
             
             <p>
