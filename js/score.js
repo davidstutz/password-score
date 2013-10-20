@@ -613,13 +613,13 @@ Score.prototype = {
      */
     calculateSingleRepititionEntropy: function(original) {
         if (this.regex['number'].test(original)) {
-            return this.lg(this.NUMBER);
+            return this.lg(this.NUMBER*original.length);
         }
         if (this.regex['lower'].test(original) || this.regex['upper'].test(original)) {
-            return this.lg(this.LOWER);
+            return this.lg(this.LOWER*original.length);
         }
         if (this.regex['punctuation'].test(original)) {
-            return this.lg(this.PUNCTUATION);
+            return this.lg(this.PUNCTUATION*original.length);
         }
 
         return this.calculateBruteForceEntropy(original);
@@ -653,7 +653,7 @@ Score.prototype = {
             possibilities += this.PUNCTUATION;
         }
 
-        return this.lg(possibilities)*length;
+        return this.lg(possibilities*length);
     },
     
     /**
