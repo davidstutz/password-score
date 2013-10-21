@@ -6,7 +6,7 @@ Estimating the time to crack is still to be implemented. In addition there is st
 
 # Demonstration
 
-A demonstration and a short introduction of the library can be found [here](http://davidstutz.github.io/pssword-score/). You may enter an arbitrary password and Password Score will score this password based on english and german dictionaries, a list of common passwords, country and city names, female and male first names as well as last names. In addition Password Score will search for keyboard patterns, sequences and repititions. Based on this score Password Score will make an estimation of the average time to crack when using 4 parallel cores.
+A demonstration and a short introduction of the library can be found [here](http://davidstutz.github.io/password-score/). You may enter an arbitrary password and Password Score will score this password based on english and german dictionaries, a list of common passwords, country and city names, female and male first names as well as last names. In addition Password Score will search for keyboard patterns, sequences and repititions. Based on this score Password Score will make an estimation of the average time to crack when using 4 parallel cores.
 
 ## Data Sources
 
