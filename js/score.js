@@ -32,7 +32,7 @@ Score.prototype = {
     YEARS: 2000,
     
     sequences: {
-        lower: 'abcdefghijklmnopqrstuvw',
+        lower: 'abcdefghijklmnopqrstuvwxyz',
         numbers: '01234567890'
     },
 
@@ -137,7 +137,7 @@ Score.prototype = {
      * @param {number} cores
      * @return {number}
      */
-    calculateAverageTimeToCrack: function(entropy, cores) {console.log(cores);
+    calculateAverageTimeToCrack: function(entropy, cores) {
         return 0.5*Math.pow(2, entropy)*0.005/cores;
     },
             
@@ -258,7 +258,7 @@ Score.prototype = {
                 if (end !== i) {
                     continue;
                 }
-
+                
                 var currentEntropy = matches[j]['entropy'];
                 if (start > 0) {
                     currentEntropy += entropies[start - 1];
@@ -540,7 +540,7 @@ Score.prototype = {
                 pattern: currentPath,
                 entropy: this.calculateKeyboardEntropy(currentPath, currentTurns, keyboard),
                 start: currentStart,
-                end: this.password.length
+                end: this.password.length - 1
             };
         }
         
@@ -571,6 +571,7 @@ Score.prototype = {
             possiblities = this.PUNCTUATION;
         }
 
+        // 
         return this.lg(possiblities) + turns*this.lg(keyboard.averageNeighbours);
     },
 
@@ -701,25 +702,33 @@ Score.prototype = {
         if (lowerSeq.length > 0) {
             matches[matches.length] = {
                 pattern: lowerSeq,
-                entropy: this.calculateSequenceEntropy(lowerSeq)
+                entropy: this.calculateSequenceEntropy(lowerSeq),
+                start: this.password.indexOf(lowerSeq),
+                end: this.password.indexOf(lowerSeq) + lowerSeq.length - 1
             };
         }
         if (lowerRevSeq.length > 0) {
             matches[matches.length] = {
                 pattern: lowerSeq,
-                entropy: this.calculateSequenceEntropy(lowerRevSeq)
+                entropy: this.calculateSequenceEntropy(lowerRevSeq),
+                start: this.password.indexOf(lowerRevSeq),
+                end: this.password.indexOf(lowerRevSeq) + lowerRevSeq.length - 1
             };
         }
         if (numberSeq.length > 0) {
             matches[matches.length] = {
                 pattern: lowerSeq,
-                entropy: this.calculateSequenceEntropy(numberSeq)
+                entropy: this.calculateSequenceEntropy(numberSeq),
+                start: this.password.indexOf(numberSeq),
+                end: this.password.indexOf(numberSeq) + numberSeq.length - 1
             };
         }
         if (numberRevSeq.length > 0) {
             matches[matches.length] = {
                 pattern: lowerSeq,
-                entropy: this.calculateSequenceEntropy(numberRevSeq)
+                entropy: this.calculateSequenceEntropy(numberRevSeq),
+                start: this.password.indexOf(numberRevSeq),
+                end: this.password.indexOf(numberRevSeq) + numberRevSeq.length - 1
             };
         }
         
