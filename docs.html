@@ -89,7 +89,7 @@ var score = new Score(password);
         
         <div class="container">
             <p>
-                To calculate the entropy we will use the <code>calculateEntropyScore(options)</code> method. This method requires some configuration as to which dictionaries to search, whether to search for keyboard patterns and so on.
+                To calculate the entropy we will use the <code>calculateEntropyScore(options)</code> method. This method requires some configuration, for example which dictionaries to search or whether to search for keyboard patterns.
             </p>
         </div>
         
@@ -168,7 +168,7 @@ var options = {
         
         <div class="container">
             <p>
-                A dictionary is simply a object where the keys represent the words, and the corresponding value represents a scoring value which is used to calculate the entropy of the word when considered as pattern. Dictionaries must not be common language dictionaries like english or german dictionaries. We can also use a list of common passwords or common names as dictionary:
+                A dictionary is simply an object where the keys represent the words, and the corresponding values represent scoring values which are used to calculate the entropy of the word when considered as pattern. Dictionaries must not be common language dictionaries like english or german dictionaries. We can also use a list of common passwords or common names as dictionary:
             </p>
         </div>
         
@@ -207,10 +207,10 @@ var commonPasswords = {
 var options = {
     'qwerty': {
         'type': 'keyboard',
-        'keyboad': QWERTY
+        'keyboard': QWERTY
     },
     'qwertz': {
-        'type': 'keyboad',
+        'type': 'keyboard',
         'keyboard': QWERTZ
     }
 };
@@ -220,13 +220,13 @@ var options = {
         
         <div class="container">
             <p>
-                Theoretically the entropy of a keyboad pattern is given by the number of possible beginnings multiplied by the number of possible next characters for each character within the pattern.
+                Theoretically the entropy of a keyboard pattern is given by the number of possible beginnings multiplied by the number of possible next characters for each character within the pattern.
             </p>
             
             <h2><a id="dates"></a>Dates</h2>
             
             <p>
-                Dates are hard to catch because they may occur in many different formats. They may consist only of a day and a month or only of a month and a year. Years on its own are common, too - my first passwords contained the last two digits of my year of birth. Fortunately regular expressions can used to scan efficiently for the different formats of dates:
+                Dates are hard to catch because they may occur in many different formats. They may consist only of a day and a month or only of a month and a year. Years on its own are common, too - my first passwords contained the last two digits of my year of birth. Fortunately regular expressions can be used to scan efficiently for the different formats of dates:
             </p>
         </div>
         
@@ -242,13 +242,13 @@ var options = {
         
         <div class="container">
             <p>
-                The number of possible dates is dependant on the format. In general we simply take $31 \cdot 12 \cdot y$ where $y$ is the number of years to consider. When assuming $y$ to be too large we will not get any difference from considering a random eight (or six) digit number with $10^8$ respectively $10^6$ possible combinations. Therefore, choosing $y$ to be around $100$ or $200$ will be a good and realistic choice.
+                The number of possible dates is dependent on the format. In general we simply take $31 \cdot 12 \cdot y$ where $y$ is the number of years being considered. When assuming $y$ to be too large we will not get any difference from considering a random eight (or six) digit number with $10^8$ respectively $10^6$ possible combinations. Therefore, choosing $y$ to be around $100$ or $200$ will be a good and realistic choice.
             </p>
             
             <h2><a id="leet-speak"></a>1337 - Leet Speak</h2>
             
             <p>
-                Using a leet speak translation table Password Score can search dictionaries for words which occur in leet speak within the password. This translation table looks like this:
+                Using a leet speak translation table, Password Score can search dictionaries for words which occur in leet speak within the password. This translation table looks like this:
             </p>
         </div>
         
@@ -285,7 +285,7 @@ leet = {
         <div class="container">  
             
             <p>
-                Given a word in leet speak Password Score generates a list of all possible substitutions using the translation table. All possible substitutions are matched against a given dictionary. The entropy can be calculated by determining the number of possible leet speak versions of the dictionary word. 
+                Given a word in leet speak, Password Score generates a list of all possible substitutions using the translation table. All possible substitutions are matched against a given dictionary. The entropy can be calculated by determining the number of possible leet speak versions of the dictionary word. 
             </p>
             
             <h2><a id="sequences-repetitions"></a>Sequences and Repetitions</h2>
