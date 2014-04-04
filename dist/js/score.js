@@ -61,7 +61,7 @@ Score.prototype = {
     },
 
     regex: {
-        repitition: {
+        repetition: {
             single: /(.)\1+/g,
             group: /(..+)\1+/g
         },
@@ -144,6 +144,7 @@ Score.prototype = {
     /**
      * Calculates a naive score ased on the brute force entropy.
      * 
+     * @param {string} password
      * @return {number}
      */
     calculateBruteForceEntropy: function(password) {
@@ -202,8 +203,8 @@ Score.prototype = {
                         optionMatches = this.collectKeyboardMatches(options[i]['keyboard']);
                     }
                     break;
-                case 'repitition':
-                    optionMatches = this.collectRepititionMatches();
+                case 'repetition':
+                    optionMatches = this.collectRepetitionMatches();
                     break;
                 case 'sequences':
                     optionMatches = this.collectSequenceMatches();
@@ -272,7 +273,7 @@ Score.prototype = {
                 }
             }
         }
-        console.log(entropyMatches);
+        
         // Gather the used matches.
         var minimumMatches = [];
         var i = this.password.length - 1;
@@ -321,7 +322,7 @@ Score.prototype = {
 
                 // Reversed match.
                 if (reversed in dictionary) {
-                    if (dictionary[string]) {
+                    if (dictionary[reversed]) {
                         matches[matches.length] = {
                             pattern: original, 
                             entropy: this.calculateReversedDictionaryEntropy(original, string, dictionary[string]),
@@ -463,7 +464,6 @@ Score.prototype = {
      * Considering a leet speak substitution matrix with a row for each letter to be translated
      * we iterate over all columns giving one 
      * 
-     * @param {string} string
      * @return {array}
      */
     collectLeetSpeakSubstitutions: function() {
@@ -591,32 +591,32 @@ Score.prototype = {
     },
 
     /**
-     * Check for all repititions.
+     * Check for all repetitions.
      * 
      * @return {array}
      */
-    collectRepititionMatches: function() {
+    collectRepetitionMatches: function() {
         var matches = [];
         
-        var singleMatches = this.password.match(this.regex['repitition']['single']) || [];
+        var singleMatches = this.password.match(this.regex['repetition']['single']) || [];
         for (var i = 0; i < singleMatches.length; i++) {
             matches[matches.length] = {
                 pattern: singleMatches[i],
-                entropy: this.calculateSingleRepititionEntropy(singleMatches[i]),
+                entropy: this.calculateSingleRepetitionEntropy(singleMatches[i]),
                 start: this.password.indexOf(singleMatches[i]),
                 end: this.password.indexOf(singleMatches[i]) + singleMatches[i].length - 1,
-                type: 'repitition'
+                type: 'repetition'
             };
         }
         
-        var groupMatches = this.password.match(this.regex['repitition']['group']) || [];
+        var groupMatches = this.password.match(this.regex['repetition']['group']) || [];
         for (var i = 0; i < groupMatches.length; i++) {
             matches[matches.length] = {
                 pattern: groupMatches[i],
-                entropy: this.calculateGroupRepititionEntropy(groupMatches[i]),
+                entropy: this.calculateGroupRepetitionEntropy(groupMatches[i]),
                 start: this.password.indexOf(groupMatches[i]),
                 end: this.password.indexOf(groupMatches[i]) + groupMatches[i].length - 1,
-                type: 'repitition'
+                type: 'repetition'
             };
         }
         
@@ -624,12 +624,12 @@ Score.prototype = {
     },
 
     /**
-     * Calculate repition entropy.
+     * Calculate repetition entropy.
      * 
      * @param {string} original substring
      * @return {number}
      */
-    calculateSingleRepititionEntropy: function(original) {
+    calculateSingleRepetitionEntropy: function(original) {
         if (this.regex['number'].test(original)) {
             return this.lg(this.NUMBER*original.length);
         }
@@ -644,20 +644,20 @@ Score.prototype = {
     },
     
     /**
-     * Calculate repition entropy for groups.
+     * Calculate repetition entropy for groups.
      * 
      * @param {string} original substring
      * @return {number}
      */
-    calculateGroupRepititionEntropy: function(original) {
+    calculateGroupRepetitionEntropy: function(original) {
         
         // First determine the length of the repeated string.
-        var result = this.regex['repitition']['group'].exec(original);
+        var result = this.regex['repetition']['group'].exec(original);
         var length = original.length;
         
-        while (result != null) {
+        while (result !== null) {
             length = result[1].length;
-            result = this.regex['repitition']['group'].exec(result[1]);
+            result = this.regex['repetition']['group'].exec(result[1]);
         }
         
         var possibilities = 0;

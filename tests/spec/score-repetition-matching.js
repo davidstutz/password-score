@@ -1,8 +1,8 @@
-describe('Repitition matching', function() {
+describe('Repetition matching', function() {
     
     var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!"§$%&/()=?}],.#+@';
     
-    // Single repititions.
+    // Single repetitions.
     for (var i = 0; i < chars.length; i++) {
         for (var j = 0; j < 1; j++) {
             
@@ -15,14 +15,14 @@ describe('Repitition matching', function() {
             }
 
             var score = new Score(password);
-            var repMatches = score.collectRepititionMatches();
+            var repMatches = score.collectRepetitionMatches();
             
-            it('[repitition] password "' + password + '" has repitition matches', function() {
+            it('[repetition] password "' + password + '" has repetition matches', function() {
                 expect(repMatches.length).not.toBe(0);
             });
-            console.log(repMatches);
+            
             var pattern = repMatches[0].pattern;
-            it('[repitition] password "' + password + '" matches pattern "' + pattern + '"', function() {
+            it('[repetition] password "' + password + '" matches pattern "' + pattern + '"', function() {
                 expect(password).toContain(pattern);
             });
         }

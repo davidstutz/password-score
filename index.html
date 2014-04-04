@@ -25,6 +25,7 @@
             <ul class="nav nav-pills">
                 <li class="active"><a href="#">Demo</a></li>
                 <li><a href="docs.html">Documentation</a></li>
+                <li><a href="tests/SpecRunner.html" target="_blank">Tests</a></li>
             </ul>
         </div>
         <hr>
@@ -43,23 +44,23 @@
                 'last': 'data/json/last.json',
                 'male': 'data/json/male.json',
                 'female': 'data/json/female.json',
-                'cities': 'data/json/cities.json',
+                'cities': 'data/json/cities.json'
             };
     
             var colors = [
                 'red',
                 'blue',
                 'yellow',
-                'green',
-            ]
+                'green'
+            ];
             
             function renderResult(score) {
                 var $container = $('.result');
                 var $ul = $('ul', $container).html('');
                 var $crack = $('.crack', $container).text('');
                 
-                $.template('match', '<li><span class="result-match">${match}</span><span class="result-entropy">${entropy}</span><span class="result-description">${description}</span></li>')
-                $.template('sum', '<li><span class="result-match">&sum;</span><span class="result-entropy">${entropy}</span></li>')
+                $.template('match', '<li><span class="result-match">${match}</span><span class="result-entropy">${entropy}</span><span class="result-description">${description}</span></li>');
+                $.template('sum', '<li><span class="result-match">&sum;</span><span class="result-entropy">${entropy}</span></li>');
                 
                 var matches = score.cache.minimumMatches.reverse();
                 for (var i = 0; i < matches.length; i++) {
@@ -137,7 +138,7 @@
                         {'type': 'keyboard', 'keyboard': QWERTY, 'key': 'qwerty'},
                         {'type': 'keyboard', 'keyboard': QWERTZ, 'key': 'qwertz'},
                         {'type': 'keyboard', 'keyboard': Numpad, 'key': 'numpad'},
-                        {'type': 'repitition', 'key': 'repitition'},
+                        {'type': 'repetition', 'key': 'repetition'},
                         {'type': 'sequences', 'key': 'sequences'},
                         {'type': 'dates', 'key': 'dates'}
                     ];
@@ -159,9 +160,9 @@
                         
                         $('#password').val($(this).data('value'));
                         $('#score').click();
-                    })
+                    });
                 });
-            })
+            });
         </script>
         <div class="container">
             <p class="alert alert-info">
@@ -233,13 +234,13 @@
                 <div class="col-md-8">
                     <div class="introduction">
                         <p>
-                            <b>Password Score</b> is designed to estimate the strength of a password as realistic as possible. The strength of a password will be expressed in the means of entropy. When given the entropy of a password the time to crack can easily be calculated. For giving a realistic estimation Password Score searches the password for patterns like englisch words, common passwords, names or even keyboard patterns.
+                            <b>Password Score</b> is designed to estimate the strength of a password as realistic as possible. The strength of a password will be expressed in the means of entropy. When given the entropy of a password the time to crack can easily be calculated. For giving a realistic estimation Password Score searches the password for patterns like english words, common passwords, names or even keyboard patterns.
                         </p>
                         <p>
                             Password Score is no graphical strength meter - it only provides a javascript library to estimate the strength of passwords expressed in entropy.
                         </p>
                         <p>
-                            Password Score is available on <a href="https://github.com/davidstutz/password-score">GitHub</a> and an further introduction can be found <a href="docs.html">here</a>
+                            Password Score is available on <a href="https://github.com/davidstutz/password-score">GitHub</a> and an introduction can be found <a href="docs.html">here</a>
                         </p>
                     </div>
                 </div>
@@ -277,7 +278,7 @@
                     <li>
                         <h3>123456</h3>
                         Sequences/
-                        Repititions
+                        Repetitions
                     </li>
                 </ul>
             </div>

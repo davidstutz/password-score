@@ -34,6 +34,7 @@
                     <ul class="nav nav-pills">
                         <li><a href="index.html">Demo</a></li>
                         <li class="active"><a href="#">Documentation</a></li>
+                        <li><a href="tests/SpecRunner.html" target="_blank">Tests</a></li>
                     </ul>
                     <hr>
                     <h2><a id="introduction"></a>Introduction</h2>
@@ -51,8 +52,9 @@
                             <li><a href="#keyboard-patterns">Keyboard Patterns</a></li>
                             <li><a href="#dates">Dates</a></li>
                             <li><a href="#leet-speak">1337 - Leet Speak</a></li>
-                            <li><a href="#sequences-repititions">Sequences and Repititions</a></li>
+                            <li><a href="#sequences-repetitions">Sequences and Repetitions</a></li>
                             <li><a href="#data-sources">Data Sources</a></li>
+                            <li><a href="#references">References</a></li>
                             <li><a href="#license">License</a></li>
                         </ul>
                     </div>
@@ -61,7 +63,7 @@
         </div>
         <div class="container">
             <p>
-                A naive approach of estimating the number of guesses needed is using a brute-force approach. Given a password $p$ we take $N := n^{|p|}$ where $|p|$ is the length of $p$ and $n$ is the number of possible characters. The brute-force approach simply tries all possible combinations of $|p|$ characters. But due to human nature assuming a password to be a random sequence of characters is far to idealisitc. Most of us tend to choose passwords made up of common words, names, special numbers - passwords which are easy to remember. So the naive approach highly overestimates the strength of a password.
+                A naive approach of estimating the number of guesses needed is using a brute-force approach. Given a password $p$ we take $N := n^{|p|}$ where $|p|$ is the length of $p$ and $n$ is the number of possible characters. The brute-force approach simply tries all possible combinations of $|p|$ characters. But due to human nature assuming a password to be a random sequence of characters is far to idealistic. Most of us tend to choose passwords made up of common words, names, special numbers - passwords which are easy to remember. So the naive approach highly overestimates the strength of a password.
             </p>
             
             <p>
@@ -136,7 +138,7 @@ var options = [
 console.log(score.calculateEntropyScore(options));
 // These are the patterns which contribute to the minimum entropy:
 console.log(score.cache.minimumMatches);
-// The patterns found within the english dictionary can be accesed via:
+// The patterns found within the english dictionary can be accessed via:
 console.log(score.cache.english);
 </pre>
             </div>
@@ -189,13 +191,13 @@ var commonPasswords = {
         
         <div class="container">
             <p>
-                As mentioned above the scoring value will be used to determine the entropy by simply taking the base-2 logarithm. We will use the scoring value as to differentiate between very common patterns and less common patterns - <code>password</code> is the most ocmmon password whereas <code>d9ebk7</code> is not that common.
+                As mentioned above the scoring value will be used to determine the entropy by simply taking the base-2 logarithm. We will use the scoring value as to differentiate between very common patterns and less common patterns - <code>password</code> is the most common password whereas <code>d9ebk7</code> is not that common.
             </p>
             
             <h2><a id="keyboard-patterns"></a>Keyboard Patterns</h2>
             
             <p>
-                <code>qwerty</code> will always be within the top ten of the most common passwords simply because it is easy to remember on the corresponding keybaord. We will assume a keyboad pattern to be a path on the keyboard when considered as undirected graph. They QWERTY and QWERTZ keyboards are already given by <code>keyboard.js</code>:
+                <code>qwerty</code> will always be within the top ten of the most common passwords simply because it is easy to remember on the corresponding keyboard. We will assume a keyboard pattern to be a path on the keyboard when considered as undirected graph. They QWERTY and QWERTZ keyboards are already given by <code>keyboard.js</code>:
             </p>
         </div>
         
@@ -224,7 +226,7 @@ var options = {
             <h2><a id="dates"></a>Dates</h2>
             
             <p>
-                Dates are hard to catch because they may occur in many different formats. They may consist only of a day and a month or only of a month and a year. Years on its own are common, too - my first passwords contained the last two digits of my birthyear. Fortunately regular expressions can used to scan efficiently for the different formats of dates:
+                Dates are hard to catch because they may occur in many different formats. They may consist only of a day and a month or only of a month and a year. Years on its own are common, too - my first passwords contained the last two digits of my year of birth. Fortunately regular expressions can used to scan efficiently for the different formats of dates:
             </p>
         </div>
         
@@ -240,7 +242,7 @@ var options = {
         
         <div class="container">
             <p>
-                The number of possible dates is dependant on the format. In general we simply take $31 \cdot 12 \cdot y$ where $y$ is the number of years to consider. When assuming $y$ to be too large we will not get any difference from considering a random eight (or six) digit number with $10^8$ respectively $10^6$ possible combinations. Thererfore choosing $y$ to be around $100$ or $200$ will be a good and realistic choice.
+                The number of possible dates is dependant on the format. In general we simply take $31 \cdot 12 \cdot y$ where $y$ is the number of years to consider. When assuming $y$ to be too large we will not get any difference from considering a random eight (or six) digit number with $10^8$ respectively $10^6$ possible combinations. Therefore, choosing $y$ to be around $100$ or $200$ will be a good and realistic choice.
             </p>
             
             <h2><a id="leet-speak"></a>1337 - Leet Speak</h2>
@@ -286,14 +288,14 @@ leet = {
                 Given a word in leet speak Password Score generates a list of all possible substitutions using the translation table. All possible substitutions are matched against a given dictionary. The entropy can be calculated by determining the number of possible leet speak versions of the dictionary word. 
             </p>
             
-            <h2><a id="sequences-repititions"></a>Sequences and Repititions</h2>
+            <h2><a id="sequences-repetitions"></a>Sequences and Repetitions</h2>
             
             <p>
-                Password Score searches for number sequences and substrings of the alphabet. Reversed sequences are checked, too. The entropy of a sequence is only influenced by the possiblities for the first character and the length.
+                Password Score searches for number sequences and substrings of the alphabet. Reversed sequences are checked, too. The entropy of a sequence is only influenced by the possibilities for the first character and the length.
             </p>
             
             <p>
-                The entropy of single character repititions is determined the same way as for sequences. When repeating multiple characters the entorpy is determined by the length of the sequence to be repeated and the number of repititions.
+                The entropy of single character repetitions is determined the same way as for sequences. When repeating multiple characters the entropy is determined by the length of the sequence to be repeated and the number of repetitions.
             </p>
             
             <h2><a id="data-sources"></a>Data Sources</h2>
@@ -307,12 +309,16 @@ leet = {
                 <li><a href="https://xato.net/passwords/more-top-worst-passwords/" target="_blank">Mark Burnett's &quot;10,000 Top Passwords&quot;</a> can be used to identify common passwords.</li>
                 <li>Lists of common female and male names as well as last names can be taken from the <a href="http://deron.meranda.us/data/" target="_blank">US Census Data</a> from 1990.</li>
                 <li>Lists of countries in all languages can be found <a href="http://www.countries-list.info/" target="_blank">here</a>.
-                <li><a href="http://www.geonames.org/" target="_blank">GeoNames.org</a> provides lists of cities <a href="http://download.geonames.org/export/dump/" target="_blank">here</a>. As only a few city names are being translated among languages these lists will work language independant.</li>
+                <li><a href="http://www.geonames.org/" target="_blank">GeoNames.org</a> provides lists of cities <a href="http://download.geonames.org/export/dump/" target="_blank">here</a>. As only a few city names are being translated among languages these lists will work language independent.</li>
             </ul>
             
             <p>
                 For using the raw data a simple PHP script can be used to generate JSON files with the appropriate format.
             </p>
+            
+            <h2><a id="references"></a>References</h2>
+            
+            <p>Mainly inspired by <a href="https://tech.dropbox.com/2012/04/zxcvbn-realistic-password-strength-estimation/" target="_blank">"zxcvbn: realistic password strength estimation"</a>, Dropbox Tech Blog.</p>
             
             <h2><a id="license"></a>License</h2>
             
