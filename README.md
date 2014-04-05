@@ -1,12 +1,12 @@
 # Password Score
 
-Password Score is a javascript library for estimating password security in the means of entropy. Beneath using dictionaries the library searches for common passwords or names and scans for patterns like dates in any format, sequences, repititions or keyboard patterns. Based on found patterns the entropy may be used to estimate the time to crack the password.
+Password Score is a javascript library for estimating password security in the means of entropy. Beneath using dictionaries, the library searches for common passwords or names and scans for patterns like dates in any format, sequences, repetitions or keyboard patterns. Based on the found patterns, the entropy may be used to estimate the average time needed to crack the password.
 
 Estimating the time to crack is still to be implemented. In addition there is still some work to do concerning documentation and the demonstration site.
 
 # Demonstration
 
-A demonstration and a short introduction of the library can be found [here](http://davidstutz.github.io/password-score/). You may enter an arbitrary password and Password Score will score this password based on english and german dictionaries, a list of common passwords, country and city names, female and male first names as well as last names. In addition Password Score will search for keyboard patterns, sequences and repititions. Based on this score Password Score will make an estimation of the average time to crack when using 4 parallel cores.
+A demonstration and a short introduction of the library can be found [here](http://davidstutz.github.io/password-score/). You may enter an arbitrary password and Password Score will score this password based on english and german dictionaries, a list of common passwords, country and city names, female and male first names as well as last names. In addition, Password Score will search for keyboard patterns, sequences and repetitions. Based on this score, Password Score will make an estimation of the average time to crack when using four cores in parallel.
 
 ## Data Sources
 
