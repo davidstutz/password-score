@@ -8,10 +8,8 @@
         <script type="text/javascript" src="docs/js/jquery.js"></script>
         <script type="text/javascript" src="docs/js/jquery.tmpl.js"></script>
         <script type="text/javascript" src="docs/js/prettify.js"></script>
-        <script type="text/javascript" src="dist/js/keyboard.js"></script>
-        <script type="text/javascript" src="dist/js/score.js"></script>
         <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">
+        <script type="text/javascript">
             MathJax.Hub.Config({
                 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
             });
@@ -25,14 +23,13 @@
     <body>
         <a href="https://github.com/davidstutz/password-score"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
         <div class="container">
-            <h1>Password Score</h1>
-        </div>
-        <div class="container">
             <div class="row">
                 <div class="col-md-8">
+                    <h1>Password Score</h1>
                     <hr>
                     <ul class="nav nav-pills">
                         <li><a href="index.html">Demo</a></li>
+                        <li><a href="api.html">API</a></li>
                         <li class="active"><a href="#">Documentation</a></li>
                         <li><a href="tests/SpecRunner.html" target="_blank">Tests</a></li>
                     </ul>
@@ -44,14 +41,15 @@
                     </p>
                 </div>
                 <div class="col-md-4">
-                    <div class="well well-sm">
+                    <div class="well well-sm" style="margin-top:12px;">
                         <ul class="nav nav-list">
                             <li><a href="#introduction">Introduction</a></li>
+                            <li><a href="#usage">Usage</a></li>
                             <li><a href="#pattern-matching">Pattern Matching</a></li>
                             <li><a href="#dictionaries">Dictionaries</a></li>
+                            <li><a href="#leet-speak">1337 - Leet Speak</a></li>
                             <li><a href="#keyboard-patterns">Keyboard Patterns</a></li>
                             <li><a href="#dates">Dates</a></li>
-                            <li><a href="#leet-speak">1337 - Leet Speak</a></li>
                             <li><a href="#sequences-repetitions">Sequences and Repetitions</a></li>
                             <li><a href="#data-sources">Data Sources</a></li>
                             <li><a href="#references">References</a></li>
@@ -70,12 +68,34 @@
                 Therefore every password cracking software uses dictionaries, lists of common passwords and names to give better performance. Password Score will search a given password for common words, passwords or names - or in general Password Score searches for <i>patterns</i> within the password. Other possible patterns are keyboard patterns like `qwerty` or sequences like `1234`. Instead of using random numbers we tend to use numbers which have a meaning like dates - birthdays or anniversaries of any kind.
             </p>
             
+            <h2><a id="usage"></a>Usage</h2>
+            
+            <p>
+                Password Score can be used without dependencies. However, the <a href="index.html">Demonstration</a> uses <a href="http://jquery.com/" target="_blank">jQuery</a> to visualize the results. Include Password Score as follows:
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+&lt;!-- Main JS file (necessary). --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;dist/js/password-score.js&quot;&gt;&lt;/script&gt;
+&lt;!-- This file provides the default options (including dictionaries in english and german): --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;dist/js/password-score-options.js&quot;&gt;&lt;/script&gt;
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                The file <code>password-score.js</code> includes two classes: <code>Score</code> and <code>Keyboard</code>. See the <a href="api.html">API Documentation</a> for details.
+            </p>
+            
             <h2><a id="pattern-matching"></a>Pattern Matching</h2>
             
             <p>
                 To use Password Score simply fetch a password and create a <code>new Score()</code>:
             </p>
-            
         </div>
         
         <div class="stripe">
@@ -89,7 +109,7 @@ var score = new Score(password);
         
         <div class="container">
             <p>
-                To calculate the entropy we will use the <code>calculateEntropyScore(options)</code> method. This method requires some configuration, for example which dictionaries to search or whether to search for keyboard patterns.
+                To calculate the entropy we will use the <code>calculateEntropyScore(options)</code> method. This method requires some configuration, for example which dictionaries to search or whether to search for keyboard patterns. This may look as follows:
             </p>
         </div>
         
@@ -99,17 +119,25 @@ var score = new Score(password);
 var options = [
     {
         'type': 'dictionary',
+        'leet': true,
+        'key': 'english',
         'dictionary': englishDictionary
     },
     {
         'type': 'dictionary',
+        'leet': false,
+        'key': 'passwords',
         'dictionary': commonPasswords
     },
     {
         'type': 'keyboard',
+        'key': 'qwerty',
         'keyboard': QWERTY
     }
 ];
+
+// The calculateEntropyScore returns a score correpsonding to the calculated
+// entropy of the password considering the above configuration.
 console.log(score.calculateEntropyScore(options));
 </pre>
             </div>
@@ -117,7 +145,11 @@ console.log(score.calculateEntropyScore(options));
         
         <div class="container">
             <p>
-                Based on the given options Password Score searches the password for all patterns it can find based on the given resources and calculates the entropy for all the patterns. Given a password consisting of $k$ non-overlapping patterns $p = p_1 \ldots p_k$ the entropy of $p$ is assumed to be the sum of the pattern entropies. Because we may have multiple overlapping patterns we then try to minimize the overall entropy as to underestimate the password rather than to overestimate it.
+                Based on the given options Password Score searches the password for all patterns it can find based on the given resources and calculates the entropy for all the patterns. Given a password consisting of $k$ non-overlapping patterns $p = p_1 \ldots p_k$ the entropy of $p$ is assumed to be the sum of the pattern entropies. Because we may have multiple overlapping patterns we then try to minimize the overall entropy as to underestimate the password rather than to overestimate it. Details on the different configuration options can be found int he next sections.
+            </p>
+            
+            <p>
+                Password Score provides <b>default options</b> including several dictionaries: english, german, english country names, german country names, city names, last names, female first names, male first names, common passwords. See <a href="#date-sources">Data Sources</a> for details. In additiona, Password scores is initially configured to search all of these dictionaries for <a href="#leet-speak">Leet Speak</a> and searches the password for <a href="#repititions">Repititions</a>, <a href="#sequences">Sequences</a> and <a href="#dates">Dates</a>.
             </p>
             
             <p>
@@ -131,14 +163,19 @@ console.log(score.calculateEntropyScore(options));
 var options = [
     {
         'type': 'dictionary',
-        'dictionary': englishDictionary,
+        'leet': true,
         'key': 'english' // Key to access found patterns.
+        'dictionary': englishDictionary
      }
 ];
+// Returns the calculated entropy.
 console.log(score.calculateEntropyScore(options));
-// These are the patterns which contribute to the minimum entropy:
+// These are the patterns which contribute to the minimum entropy, that is all
+// patterns found in the given resources which - taken together - result
+// in minimum entropy.
 console.log(score.cache.minimumMatches);
-// The patterns found within the english dictionary can be accessed via:
+// The patterns found within the english dictionary can be accessed using
+// the 'key' confiugraiton option used above:
 console.log(score.cache.english);
 </pre>
             </div>
@@ -159,6 +196,7 @@ var options = {
     // For using different dictionaries different keys can be used.
     'english' : {
         'type': 'dictionary',
+        'key': 'english',
         'dictionary': englishDictionary
     },
 };
@@ -168,7 +206,7 @@ var options = {
         
         <div class="container">
             <p>
-                A dictionary is simply an object where the keys represent the words, and the corresponding values represent scoring values which are used to calculate the entropy of the word when considered as pattern. Dictionaries must not be common language dictionaries like english or german dictionaries. We can also use a list of common passwords or common names as dictionary:
+                A dictionary is simply an object where the keys represent the words, and the corresponding values represent scoring values which are used to calculate the entropy of the word when considered as pattern. Mostly these values will be a rank, that is more ocmmon words receive a higher rank than rare words, see the xample below. Dictionaries must not be common language dictionaries like english or german dictionaries. We can also use a list of common passwords or common names as dictionary:
             </p>
         </div>
         
@@ -176,14 +214,14 @@ var options = {
             <div class="container">
 <pre class="prettyprint">
 var englishDictionary = {
-    'you': 1,
+    'you': 1, // Most used english word ...
     // ... 
-    'housewife': 2154,
+    'housewife': 2154, // Higher rank -> less common word!
 };
 var commonPasswords = {
-    'passwords': 1,
+    'password': 1, // Most common password ...
     // ... 
-    'd9ebk7': 8603,
+    'd9ebk7': 8603, // Higher rank -> less common password!
 };
 </pre>
             </div>
@@ -192,57 +230,6 @@ var commonPasswords = {
         <div class="container">
             <p>
                 As mentioned above the scoring value will be used to determine the entropy by simply taking the base-2 logarithm. We will use the scoring value as to differentiate between very common patterns and less common patterns - <code>password</code> is the most common password whereas <code>d9ebk7</code> is not that common.
-            </p>
-            
-            <h2><a id="keyboard-patterns"></a>Keyboard Patterns</h2>
-            
-            <p>
-                <code>qwerty</code> will always be within the top ten of the most common passwords simply because it is easy to remember on the corresponding keyboard. We will assume a keyboard pattern to be a path on the keyboard when considered as undirected graph. They QWERTY and QWERTZ keyboards are already given by <code>keyboard.js</code>:
-            </p>
-        </div>
-        
-        <div class="stripe">
-            <div class="container">
-<pre class="prettyprint">
-var options = {
-    'qwerty': {
-        'type': 'keyboard',
-        'keyboard': QWERTY
-    },
-    'qwertz': {
-        'type': 'keyboard',
-        'keyboard': QWERTZ
-    }
-};
-</pre>
-            </div>
-        </div>
-        
-        <div class="container">
-            <p>
-                Theoretically the entropy of a keyboard pattern is given by the number of possible beginnings multiplied by the number of possible next characters for each character within the pattern.
-            </p>
-            
-            <h2><a id="dates"></a>Dates</h2>
-            
-            <p>
-                Dates are hard to catch because they may occur in many different formats. They may consist only of a day and a month or only of a month and a year. Years on its own are common, too - my first passwords contained the last two digits of my year of birth. Fortunately regular expressions can be used to scan efficiently for the different formats of dates:
-            </p>
-        </div>
-        
-        <div class="stripe">
-            <div class="container">
-<pre class="prettyprint">
-'(0?[1-9]|1[012])([\- \/.])?(0?[1-9]|[12][0-9]|3[01])([\- \/.])?([0-9]{4})' // Middle-endian, four digit year.
-'(0?[1-9]|[12][0-9]|3[01])([\- \/.])?(0?[1-9]|1[012])([\- \/.])?([0-9]{2})' // Little-endian, two digit year.
-// ...
-</pre>
-            </div>
-        </div>
-        
-        <div class="container">
-            <p>
-                The number of possible dates is dependent on the format. In general we simply take $31 \cdot 12 \cdot y$ where $y$ is the number of years being considered. When assuming $y$ to be too large we will not get any difference from considering a random eight (or six) digit number with $10^8$ respectively $10^6$ possible combinations. Therefore, choosing $y$ to be around $100$ or $200$ will be a good and realistic choice.
             </p>
             
             <h2><a id="leet-speak"></a>1337 - Leet Speak</h2>
@@ -285,15 +272,243 @@ leet = {
         <div class="container">  
             
             <p>
-                Given a word in leet speak, Password Score generates a list of all possible substitutions using the translation table. All possible substitutions are matched against a given dictionary. The entropy can be calculated by determining the number of possible leet speak versions of the dictionary word. 
+                Given a word in leet speak, Password Score generates a list of all possible substitutions using the translation table. All possible substitutions are matched against a given dictionary. The entropy can be calculated by determining the number of possible leet speak versions of the dictionary word. To configure password score to apply leet speak detection on a given dictionary use:
+            </p>
+            
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = [
+    {
+        'type': 'dictionary',
+        'leet': true, // Enables leet speak matching for this dictionary.
+        'key': 'english',
+        'dictionary': englishDictionary
+    }
+];
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <h2><a id="keyboard-patterns"></a>Keyboard Patterns</h2>
+            
+            <p>
+                <code>qwerty</code> will always be within the top ten of the most common passwords simply because it is easy to remember on the corresponding keyboard. We will assume a keyboard pattern to be a path on the keyboard when considered as undirected graph. They QWERTY and QWERTZ keyboards are includes in Password Score per default. However, additional keyboard layouts may be used as follows:
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = {
+    {
+        'type': 'keyboard',
+        'keyboard': AZERTY // Your definition of the AZERTY keyboard ...
+    }
+};
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                Theoretically the entropy of a keyboard pattern is given by the number of possible beginnings multiplied by the number of possible next characters for each character within the pattern.
+            </p>
+            
+            <p>
+                Of course, it is possible to define additional keyboard layouts, see the definition of the QWERTY keyboard below. Each key is assumed to have a maximum of six neighbors.
+            </p>
+        </div>
+            
+            <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+QWERTY: new Keyboard({
+    '~': [null, null, null, '~`', '1!', null, null], // 1
+    '`': [null, null, null, '~`', '1!', null, null], // 1
+    '1': [null, null, '`~', '1!', '2@', null, 'qQ'], // 3
+    '!': [null, null, '`~', '1!', '2@', null, 'qQ'], // 3
+    '2': [null, null, '1!', '2@', '3#', 'qQ', 'wW'], // 4
+    '@': [null, null, '1!', '2@', '3#', 'qQ', 'wW'], //4
+    '3': [null, null, '2@', '3#', '4$', 'wW', 'eE'], //4
+    '#': [null, null, '2@', '3#', '4$', 'wW', 'eE'], //4
+    '4': [null, null, '3#', '4$', '5%', 'eE', 'rR'], //4
+    '$': [null, null, '3#', '4$', '5%', 'eE', 'rR'], //4
+    '5': [null, null, '4$', '5%', '6^', 'rR', 'tT'], //4
+    '%': [null, null, '4$', '5%', '6^', 'rR', 'tT'], //4
+    '6': [null, null, '5%', '6^', '7&', 'tT', 'yY'], //4
+    '^': [null, null, '5%', '6^', '7&', 'tT', 'yY'], //4
+    '7': [null, null, '6^', '7&', '8*', 'yY', 'uU'], //4
+    '&': [null, null, '6^', '7&', '8*', 'yY', 'uU'], //4
+    '8': [null, null, '7&', '8*', '9(', 'uU', 'iI'], // 4
+    '*': [null, null, '7&', '8*', '9(', 'uU', 'iI'], // 4
+    '9': [null, null, '8*', '9(', '0)', 'iI', 'oO'], // 4
+    '(': [null, null, '8*', '9(', '0)', 'iI', 'oO'], // 4
+    '0': [null, null, '9(', '0)', '-_', 'oO', 'pP'], // 4
+    ')': [null, null, '9(', '0)', '-_', 'oO', 'pP'], // 4
+    '-': [null, null, '0)', '-_', '=+', 'pP', '[{'], // 4
+    '_': [null, null, '0)', '-_', '=+', 'pP', '[{'], // 4
+    '=': [null, null, '-_', '=+', '\\|', '{[', '}]'], // 4
+    '+': [null, null, '-_', '=+', '\\|', '{[', '}]'], // 4
+    '\\': [null, null, '=+', '\\|', null, '}]', null], // 2
+    '|': [null, null, '=+', '\\|', null, '}]', null], // 2
+    'q': ['1!', '2@', null, 'qQ', 'wW', null, 'aA'], // 4
+    'Q': ['1!', '2@', null, 'qQ', 'wW', null, 'aA'], // 4
+    'w': ['2@', '3#', 'qQ', 'wW','eE', 'aA', 'sS'], // 6
+    'W': ['2@', '3#', 'qQ', 'wW','eE', 'aA', 'sS'], // 6
+    'e': ['3#', '4$', 'wW', 'eE', 'rR', 'sS', 'dD'], // 6
+    'E': ['3#', '4$', 'wW', 'eE', 'rR', 'sS', 'dD'], // 6
+    'r': ['4$', '5%', 'eE', 'rR', 'tT', 'dD', 'fF'], // 6
+    'R': ['4$', '5%', 'eE', 'rR', 'tT', 'dD', 'fF'], // 6
+    't': ['5%', '6^', 'rR', 'tT', 'yY', 'fF', 'gG'], // 6
+    'T': ['5%', '6^', 'rR', 'tT', 'yY', 'fF', 'gG'], // 6
+    'y': ['6^', '7&', 'tT', 'yY', 'uU', 'gG', 'hH'], // 6
+    'Y': ['6^', '7&', 'tT', 'yY', 'uU', 'gG', 'hH'], // 6
+    'u': ['7&', '8*', 'yY', 'uU', 'iI', 'hH', 'jJ'], // 6
+    'U': ['7&', '8*', 'yY', 'uU', 'iI', 'hH', 'jJ'], // 6
+    'i': ['8*', '9(', 'uU', 'iI', 'oO', 'jJ', 'kK'], // 6
+    'I': ['8*', '9(', 'uU', 'iI', 'oO', 'jJ', 'kK'], // 6
+    'o': ['9(', '0)', 'iI', 'oO', 'pP', 'kK', 'lL'], // 6
+    'O': ['9(', '0)', 'iI', 'oO', 'pP', 'kK', 'lL'], // 6
+    'p': ['0)', '-_', 'oO', 'pP', '[{', 'lL', ':;'], // 6
+    'P': ['0)', '-_', 'oO', 'pP', '[{', 'lL', ':;'], // 6
+    '[': ['-_', '=+', 'pP', '[{', ']}', ':;', '\'"'], // 6
+    '{': ['-_', '=+', 'pP', '[{', ']}', ':;', '\'"'], // 6
+    ']': ['=+', '\\|', '[{', ']}', null, '\'"', null], // 4
+    '}': ['=+', '\\|', '[{', ']}', null, '\'"', null], // 4
+    'a': ['qQ', 'wW', null, 'aA', 'sS', null, 'zZ'], // 4
+    'A': ['qQ', 'wW', null, 'aA', 'sS', null, 'zZ'], // 4
+    's': ['wW', 'eE', 'aA', 'sS', 'dD', 'zZ', 'xX'], // 6
+    'S': ['wW', 'eE', 'aA', 'sS', 'dD', 'zZ', 'xX'], // 6
+    'd': ['eE', 'rR', 'sS', 'dD', 'fF', 'xX', 'cC'], // 6
+    'D': ['eE', 'rR', 'sS', 'dD', 'fF', 'xX', 'cC'], // 6
+    'f': ['rR', 'tT', 'dD', 'fF', 'gG', 'cC', 'vV'], // 6
+    'F': ['rR', 'tT', 'dD', 'fF', 'gG', 'cC', 'vV'], // 6
+    'g': ['tT', 'yY', 'fF', 'gG', 'hH', 'vV', 'bB'], // 6
+    'G': ['tT', 'yY', 'fF', 'gG', 'hH', 'vV', 'bB'], // 6
+    'h': ['yY', 'uU', 'gG', 'hH', 'jJ', 'bB', 'nN'], // 6
+    'H': ['yY', 'uU', 'gG', 'hH', 'jJ', 'bB', 'nN'], // 6
+    'j': ['uU', 'iI', 'hH', 'jJ', 'kK', 'nN', 'mM'], // 6
+    'J': ['uU', 'iI', 'hH', 'jJ', 'kK', 'nN', 'mM'], // 6
+    'k': ['iI', 'oO', 'jJ', 'kK', 'lL', 'mM', ',;'], // 6
+    'K': ['iI', 'oO', 'jJ', 'kK', 'lL', 'mM', ',;'], // 6
+    'l': ['oO', 'pP', 'kK', 'lL', ':;', ',<', '.>'], // 6
+    'L': ['oO', 'pP', 'kK', 'lL', ':;', ',<', '.>'], // 6
+    ':': ['pP', '[{', 'lL', ':;', '\'"', '.>', '?/'], // 6
+    ';': ['pP', '[{', 'lL', ':;', '\'"', '.>', '?/'], // 6
+    '\'': ['[{', ']}', ':;', '\'"', null, '?/', null], // 5
+    '"': ['[{', ']}', ':;', '\'"', null, '?/', null], // 5
+    'z': ['aA', 'sS', null, 'zZ', 'xX', null, null], // 4
+    'Z': ['aA', 'sS', null, 'zZ', 'xX', null, null], // 4
+    'x': ['sS', 'dD', 'zZ', 'xX', 'cC', null, null], // 4
+    'X': ['sS', 'dD', 'zZ', 'xX', 'cC', null, null], // 4
+    'c': ['dD', 'fF', 'xX', 'cC', 'vV', null, null], // 4
+    'C': ['dD', 'fF', 'xX', 'cC', 'vV', null, null], // 4
+    'v': ['fF', 'gG', 'cC', 'vV', 'bB', null, null], // 4
+    'V': ['fF', 'gG', 'cC', 'vV', 'bB', null, null], // 4
+    'b': ['gG', 'hH', 'vV', 'bB', 'nN', null, null], // 4
+    'B': ['gG', 'hH', 'vV', 'bB', 'nN', null, null], // 4
+    'n': ['hH', 'jJ', 'bB', 'nN', 'mM', null, null], // 4
+    'N': ['hH', 'jJ', 'bB', 'nN', 'mM', null, null], // 4
+    'm': ['jJ', 'kK', 'nN', 'mM', ',<', null, null], // 4
+    'M': ['jJ', 'kK', 'nN', 'mM', ',<', null, null], // 4
+    ',': ['kK', 'lL', 'mM', ',<', '.>', null, null], // 4
+    '<': ['kK', 'lL', 'mM', ',<', '.>', null, null], // 4
+    '.': ['lL', ':;', ',<', '.>', '/?', null, null], // 4
+    '>': ['lL', ':;', ',<', '.>', '/?', null, null], // 4
+    '/': [':;', '\'"', '.>', '/?', null, null, null], // 3
+    '?': [':;', '\'"', '.>', '/?', null, null, null] // 3
+}, 4.571428571), // Average number of neighbors.
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <h2><a id="dates"></a>Dates</h2>
+            
+            <p>
+                Per default, Password Score searches the given password for dates. However, to configure Password Score to do so manually, use:
+            </p>
+        </div>
+            
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = {
+    {
+        'type': 'dates'
+    }
+};
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                Dates are hard to catch because they may occur in many different formats. They may consist only of a day and a month or only of a month and a year. Years on its own are common, too - my first passwords contained the last two digits of my year of birth. Fortunately regular expressions can be used to scan efficiently for the different formats of dates:
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+'(0?[1-9]|1[012])([\- \/.])?(0?[1-9]|[12][0-9]|3[01])([\- \/.])?([0-9]{4})' // Middle-endian, four digit year.
+'(0?[1-9]|[12][0-9]|3[01])([\- \/.])?(0?[1-9]|1[012])([\- \/.])?([0-9]{2})' // Little-endian, two digit year.
+// ...
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                The number of possible dates is dependent on the format. In general we simply take $31 \cdot 12 \cdot y$ where $y$ is the number of years being considered. When assuming $y$ to be too large we will not get any difference from considering a random eight (or six) digit number with $10^8$ respectively $10^6$ possible combinations. Therefore, choosing $y$ to be around $100$ or $200$ will be a good and realistic choice.
             </p>
             
             <h2><a id="sequences-repetitions"></a>Sequences and Repetitions</h2>
             
             <p>
-                Password Score searches for number sequences and substrings of the alphabet. Reversed sequences are checked, too. The entropy of a sequence is only influenced by the possibilities for the first character and the length.
+                Password Score is able to search for number sequences and substrings of the alphabet (and does so per default):
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = [
+    {
+        'type': 'sequences'
+    }
+];
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <p>
+                Reversed sequences are checked as well. The entropy of a sequence is only influenced by the possibilities for the first character and the length.
             </p>
             
+            <p>
+                In addition, Password score searches for repititions (also per default):
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+var options = [
+    {
+        'type': 'repetition'
+    }
+];
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
             <p>
                 The entropy of single character repetitions is determined the same way as for sequences. When repeating multiple characters the entropy is determined by the length of the sequence to be repeated and the number of repetitions.
             </p>
@@ -301,7 +516,7 @@ leet = {
             <h2><a id="data-sources"></a>Data Sources</h2>
             
             <p>
-                As Password Score works best when using in combination with usual dictionaries, list of common passwords and names it already includes some raw data:
+                See below for the data used for the dictionaries:
             </p>
             
             <ul>
@@ -319,30 +534,6 @@ leet = {
             <h2><a id="references"></a>References</h2>
             
             <p>Mainly inspired by <a href="https://tech.dropbox.com/2012/04/zxcvbn-realistic-password-strength-estimation/" target="_blank">"zxcvbn: realistic password strength estimation"</a>, Dropbox Tech Blog.</p>
-            
-            <h2><a id="license"></a>License</h2>
-            
-            <p>
-                This project is licensed under the BSD 3-Clause license:
-            </p>
-            
-            <p>
-                Copyright (c) 2013 - 2014 David Stutz All rights reserved.
-            </p>
-            
-            <p>
-                Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-            </p>
-            
-            <ul>
-                <li>Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.</li>
-                <li>Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.</li>
-                <li>Neither the name of the nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.</li>
-            </ul>
-            
-            <p>
-                THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-            </p>
         </div>
         <hr>
         <div class="container">

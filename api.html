@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Password Score</title>
+        <link rel="stylesheet" type="text/css" href="docs/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="docs/css/prettify.css">
+        
+        <script type="text/javascript" src="docs/js/jquery.js"></script>
+        <script type="text/javascript" src="docs/js/jquery.tmpl.js"></script>
+        <script type="text/javascript" src="docs/js/prettify.js"></script>
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript">
+            MathJax.Hub.Config({
+                tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+            });
+            
+            $(document).ready(function() {
+                window.prettyPrint() && prettyPrint();
+            });
+        </script>
+        
+    </head>
+    <body>
+        <a href="https://github.com/davidstutz/password-score"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+        <div class="container">
+            <h1>Password Score</h1>
+        </div>
+        <div class="container">
+            <hr>
+            <ul class="nav nav-pills">
+                <li><a href="index.html">Demo</a></li>
+                <li class="active"><a href="#">API</a></li>
+                <li><a href="docs.html">Documentation</a></li>
+                <li><a href="tests/SpecRunner.html" target="_blank">Tests</a></li>
+            </ul>
+            <hr>
+            
+            <h2>Score</h2>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <p>
+                        The <code>Score</code> class is used to calculate entropy scores of passwords. The entropy score is directly proportional to the strength of a password. The score can be calculated using a naive approach - mostly overestimating the strength of simple passwords - or using a more sophisticated approach - aiming to underestimate passwords such that users are encouraged to choose stronger passwords.
+                    </p>
+
+                    <p>
+                        The class can easily be used to build a strength meter as for example <a href="https://github.com/davidstutz/bootstrap-strength-meter" target="_blank">Bootstrap Strength Meter</a>.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <div class="well well-sm">
+                        <ul class="nav nav-list">
+                            <li><a href="#constructor">Constructor</a></li>
+                            <li><a href="#calculateEntropyScore">Score.calculateEntropyScore</a></li>
+                            <li><a href="#calculateBruteForceEntropy">Score.calculateBruteForceEntropy</a></li>
+                            <li><a href="#calculateAverageTimeToCrack">Score.calculateAverageTimeToCrack</a></li>
+                            <li><a href="#cache">Score.cache</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3><a id="constructor"></a>Constructor</h3>
+            
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+new Score(password);
+</pre>
+            </div>
+        </div>
+            
+        <div class="container">
+            
+            <table class="table table-gray">
+                <tbody>
+                    <tr>
+                        <th>Parameters</th>
+                        <td>
+                            <dl>
+                                <dt>password</dt>
+                                <dd>
+                                    The non-empty password to score.
+                                </dd>
+                            </dl>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3><a id="calculateEntropyScore"></a>Score.calculateEntropyScore</h3>
+            
+            <p>
+                This method is used to calculate a realistic entropy score of the password. This score can be used to reliably estimate the strength of a password.
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+score = new Score(password);
+score.calculateEntropyScore()
+score.calculateEntropyScore(options);
+score.calculateEnoptryScore(options, append);
+</pre>
+            </div>
+        </div>
+            
+        <div class="container">
+            
+            <table class="table table-gray">
+                <tbody>
+                    <tr>
+                        <th>Parameters</th>
+                        <td>
+                            <dl>
+                                <dt>options</dt>
+                                <dd>
+                                    <p>
+                                        The optiosn to configure how to calculate the score. If not provided, the default options are used, see below. For details on the available options see the <a href="docs.html">Documentation</a>.
+                                    </p>
+                                    
+                                    <div class="box" style="width:90%">
+<pre class="prettyprint linenums">
+var defaultOptions = [
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'en',
+        'dictionary': {"you":1,"the":2,"to":3, /* see data/json/last.json ... */}
+    },
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'de',
+        'dictionary': {"ich":1,"sie":2,"das":3, /* see data/json/last.json ... */}
+    },
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'countries_en',
+        'dictionary': {"afghanistan":1,"albania":2,"algeria":3, /* see data/json/countries-en.json ... */}
+    },
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'countries_de',
+        'dictionary': {"afghanistan":1,"alandinseln":2,"albanien":3, /* see data/json/countries-de.json ... */}
+    },
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'cities',
+        'dictionary': {"Shanghai":1,"Mumbai":2,"Mexico City":3, /* see data/json/cities.json ... */}
+    },
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'last',
+        'dictionary': {"smith":1,"johnson":2,"williams":3, /* see data/json/last.json ... */}
+    },
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'female',
+        'dictionary': {"mary":1,"patricia":2,"linda":3,  /* see data/json/last.json ... */}
+    },
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'male',
+        'dictionary': {"james":1,"john":2,"robert":3, /* see data/json/last.json ... */}
+    },
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'passwords',
+        'dictionary': {"password":1,"123456":2,"12345678":3, /* see data/json/last.json ... */}
+    },
+    {
+        'type': 'keyboard',
+        'key': 'qwerty',
+        'keyboard': this.keyboards.QWERTY
+    },
+    {
+        'type': 'keyboard',
+        'key': 'qwertz',
+        'keyboard': this.keyboards.QWERTZ
+    },
+    {
+        'type': 'keyboard',
+        'key': 'qwerty_numpad',
+        'keyboard': this.keyboards.QWERTYNumpad
+    },
+    {
+        'type': 'keyboard',
+        'key': 'qwertz_numpad',
+        'keyboard': this.keyboards.QWERTZNumpad
+    },
+    {
+        'type': 'repetition',
+        'key': 'repetition'
+    },
+    {
+        'type': 'sequences',
+        'key': 'sequences'
+    },
+    {
+        'type': 'dates',
+        'key': 'dates'
+    }
+];
+</pre>
+                                    </div>
+                                </dd>
+                                
+                                <dt>append</dt>
+                                <dd>
+                                    The default options given above can be used as base such that additional dictionaries can easily be added using the <code>options</code> parameter. However, the default dictionaries can also be replaced by providing custom <code>options</code> and setting <code>append</code> to <code>false</code>, that is the provided options are not appended to the default ones.
+                                </dd>
+                            </dl>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Returns</th>
+                        <td>
+                            The method returns the calculated score which may range from zero to infinity. Check the <a href="index.html">demonstration</a> to get a feeling for the calculated score.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3><a id="calculateBruteForceEntropy"></a>Score.calculateBruteForceEntropy</h3>
+            
+            <p>
+                This method is used to calculate a naive entropy score, that is the password is not searched for patterns or dictionary entries.
+            </p>
+        </div>
+            
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+score = new Score(password);
+score.calculateBruteForceEntropy();
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <table class="table table-gray">
+                <tbody>
+                    <tr>
+                        <th>Returns</th>
+                        <td>
+                            The method returns the naive entropy score.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3><a id="calculateAverageTimeToCrack"></a>Score.calculateAverageTimeToCrack</h3>
+            
+            <p>
+                This method can be used to calculate the average number of seconds needed to crack a password with the given entropy score. The method assumes that it takes $0.005$ seconds to check a single password.
+            </p>
+        </div>
+            
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+score = new Score(password);
+var entropy = score.calculateBruteForceEntropy();
+score.calculateAverageTimeToCrack(entropy, cores);
+</pre>
+            </div>
+        </div>
+        
+        <div class="container">
+            <table class="table table-gray">
+                <tbody>
+                    <tr>
+                        <th>Parameters</th>
+                        <td>
+                            <dl>
+                                <dt>entropy</dt>
+                                <dd>The entropy of the password as calculated by <code>calculateEntropyScore</code> or <code>calculateBruteForceEntropy</code>.</dd>
+                                <dt>cores</dt>
+                                <dd>The number of cores used to crack the password.</dd>
+                            </dl>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Returns</th>
+                        <td>
+                            The method returns the number of seconds needed on average to crack the a password with the given entropy score.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3><a id="cache"></a>Score.cache</h3>
+            
+            <p>
+                Running <code>calculateEntropyScore</code> or <code>calculateBruteForceEntropy</code> will cause Password Score to save some details in <code>Score.cache</code>:
+            </p>
+            
+            <table class="table table-gray">
+                <tbody>
+                    <tr>
+                        <th>Score.cache.entropy</th>
+                        <td>The entropy score calculated by <code>calculateEntropyScore</code>.</td>
+                    </tr>
+                    <tr>
+                        <th>Score.cache.minimumMatches</th>
+                        <td>The array of all patterns found by Password Score and corresponding to the calculated entropy score.</td>
+                    </tr>
+                    <tr>
+                        <th>Score.cache[key]</th>
+                        <td>
+                            <p>
+                                <code>key</code> may be any string given during the configuration when using <code>calculateEntropyScore</code>, see the documentation of <code>calculateEntropyScore</code> or the following example:
+                            </p>
+                            
+                            <div class="box" style="width:90%">
+<pre class="prettyprint linenums">
+// Remember the first dictionary of the default options:
+var options = [
+    {
+        'type': 'dictionary',
+        'leet': true,
+        'key': 'en',
+        'dictionary': {"you":1,"the":2,"to":3, /* see data/json/last.json ... */}
+    },
+];
+// ...
+score = new Score(password);
+score.calculateEntropyScore();
+console.log(score.cache['en']);
+</pre>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Score.cache.naiveEntropy</th>
+                        <td>The entropy calculated by <code>calculateBruteForceEntropy</code>.</td>
+                    </tr>
+                    <tr>
+                        <th>Score.cache.clear</th>
+                        <td>This method clears the cache. However, it is not necessary ot use this while not changing the configuration as all relevant information is overwritten when running <code>calculateEntropyScore</code> or <code>calculateBruteForceEntropy</code> repeatedly.</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h2>Keyboard</h2>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <p>
+                        The <code>Keyboard</code> class is used to represent a specific keyboard layout as undirected graph. This class is mainly used by the <code>Score</code> class to find keyboard patterns.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <div class="well well-sm">
+                        <ul class="nav nav-list">
+                            <li><a href="#keyboard-constructor">Constructor</a></li>
+                            <li><a href="#areAdjacent">Keyboard.areAdjacent</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3><a id="keyboard-constructor"></a>Constructor</h3>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+new Keyboard(adjacencyList, averageDegree);
+</pre>
+            </div>
+        </div>
+            
+        <div class="container">
+            <table class="table table-gray">
+                <tbody>
+                    <tr>
+                        <th>Parameters</th>
+                        <td>
+                            <dl>
+                                <dt>adjacencyList</dt>
+                                <dd>
+                                    <p>
+                                        A keyboard is primarily defined by an adjacency list, that is each key on the keyboard has six neighbors. However, the adjacency list always includes the key itself. An example is shown below:
+                                    </p>
+                                    
+                                    <div class="box" style="width:90%">
+<pre class="prettyprint">
+QWERTY: new Keyboard({
+    '~': [null, null, null, '~`', '1!', null, null], // 1
+    '`': [null, null, null, '~`', '1!', null, null], // 1
+    '1': [null, null, '`~', '1!', '2@', null, 'qQ'], // 3
+    '!': [null, null, '`~', '1!', '2@', null, 'qQ'], // 3
+    '2': [null, null, '1!', '2@', '3#', 'qQ', 'wW'], // 4
+    '@': [null, null, '1!', '2@', '3#', 'qQ', 'wW'], //4
+    '3': [null, null, '2@', '3#', '4$', 'wW', 'eE'], //4
+    '#': [null, null, '2@', '3#', '4$', 'wW', 'eE'], //4
+    '4': [null, null, '3#', '4$', '5%', 'eE', 'rR'], //4
+    '$': [null, null, '3#', '4$', '5%', 'eE', 'rR'], //4
+    '5': [null, null, '4$', '5%', '6^', 'rR', 'tT'], //4
+    '%': [null, null, '4$', '5%', '6^', 'rR', 'tT'], //4
+    '6': [null, null, '5%', '6^', '7&', 'tT', 'yY'], //4
+    '^': [null, null, '5%', '6^', '7&', 'tT', 'yY'], //4
+    '7': [null, null, '6^', '7&', '8*', 'yY', 'uU'], //4
+    '&': [null, null, '6^', '7&', '8*', 'yY', 'uU'], //4
+    '8': [null, null, '7&', '8*', '9(', 'uU', 'iI'], // 4
+    '*': [null, null, '7&', '8*', '9(', 'uU', 'iI'], // 4
+    '9': [null, null, '8*', '9(', '0)', 'iI', 'oO'], // 4
+    '(': [null, null, '8*', '9(', '0)', 'iI', 'oO'], // 4
+    '0': [null, null, '9(', '0)', '-_', 'oO', 'pP'], // 4
+    ')': [null, null, '9(', '0)', '-_', 'oO', 'pP'], // 4
+    '-': [null, null, '0)', '-_', '=+', 'pP', '[{'], // 4
+    '_': [null, null, '0)', '-_', '=+', 'pP', '[{'], // 4
+    '=': [null, null, '-_', '=+', '\\|', '{[', '}]'], // 4
+    '+': [null, null, '-_', '=+', '\\|', '{[', '}]'], // 4
+    '\\': [null, null, '=+', '\\|', null, '}]', null], // 2
+    '|': [null, null, '=+', '\\|', null, '}]', null], // 2
+    'q': ['1!', '2@', null, 'qQ', 'wW', null, 'aA'], // 4
+    'Q': ['1!', '2@', null, 'qQ', 'wW', null, 'aA'], // 4
+    'w': ['2@', '3#', 'qQ', 'wW','eE', 'aA', 'sS'], // 6
+    'W': ['2@', '3#', 'qQ', 'wW','eE', 'aA', 'sS'], // 6
+    'e': ['3#', '4$', 'wW', 'eE', 'rR', 'sS', 'dD'], // 6
+    'E': ['3#', '4$', 'wW', 'eE', 'rR', 'sS', 'dD'], // 6
+    'r': ['4$', '5%', 'eE', 'rR', 'tT', 'dD', 'fF'], // 6
+    'R': ['4$', '5%', 'eE', 'rR', 'tT', 'dD', 'fF'], // 6
+    't': ['5%', '6^', 'rR', 'tT', 'yY', 'fF', 'gG'], // 6
+    'T': ['5%', '6^', 'rR', 'tT', 'yY', 'fF', 'gG'], // 6
+    'y': ['6^', '7&', 'tT', 'yY', 'uU', 'gG', 'hH'], // 6
+    'Y': ['6^', '7&', 'tT', 'yY', 'uU', 'gG', 'hH'], // 6
+    'u': ['7&', '8*', 'yY', 'uU', 'iI', 'hH', 'jJ'], // 6
+    'U': ['7&', '8*', 'yY', 'uU', 'iI', 'hH', 'jJ'], // 6
+    'i': ['8*', '9(', 'uU', 'iI', 'oO', 'jJ', 'kK'], // 6
+    'I': ['8*', '9(', 'uU', 'iI', 'oO', 'jJ', 'kK'], // 6
+    'o': ['9(', '0)', 'iI', 'oO', 'pP', 'kK', 'lL'], // 6
+    'O': ['9(', '0)', 'iI', 'oO', 'pP', 'kK', 'lL'], // 6
+    'p': ['0)', '-_', 'oO', 'pP', '[{', 'lL', ':;'], // 6
+    'P': ['0)', '-_', 'oO', 'pP', '[{', 'lL', ':;'], // 6
+    '[': ['-_', '=+', 'pP', '[{', ']}', ':;', '\'"'], // 6
+    '{': ['-_', '=+', 'pP', '[{', ']}', ':;', '\'"'], // 6
+    ']': ['=+', '\\|', '[{', ']}', null, '\'"', null], // 4
+    '}': ['=+', '\\|', '[{', ']}', null, '\'"', null], // 4
+    'a': ['qQ', 'wW', null, 'aA', 'sS', null, 'zZ'], // 4
+    'A': ['qQ', 'wW', null, 'aA', 'sS', null, 'zZ'], // 4
+    's': ['wW', 'eE', 'aA', 'sS', 'dD', 'zZ', 'xX'], // 6
+    'S': ['wW', 'eE', 'aA', 'sS', 'dD', 'zZ', 'xX'], // 6
+    'd': ['eE', 'rR', 'sS', 'dD', 'fF', 'xX', 'cC'], // 6
+    'D': ['eE', 'rR', 'sS', 'dD', 'fF', 'xX', 'cC'], // 6
+    'f': ['rR', 'tT', 'dD', 'fF', 'gG', 'cC', 'vV'], // 6
+    'F': ['rR', 'tT', 'dD', 'fF', 'gG', 'cC', 'vV'], // 6
+    'g': ['tT', 'yY', 'fF', 'gG', 'hH', 'vV', 'bB'], // 6
+    'G': ['tT', 'yY', 'fF', 'gG', 'hH', 'vV', 'bB'], // 6
+    'h': ['yY', 'uU', 'gG', 'hH', 'jJ', 'bB', 'nN'], // 6
+    'H': ['yY', 'uU', 'gG', 'hH', 'jJ', 'bB', 'nN'], // 6
+    'j': ['uU', 'iI', 'hH', 'jJ', 'kK', 'nN', 'mM'], // 6
+    'J': ['uU', 'iI', 'hH', 'jJ', 'kK', 'nN', 'mM'], // 6
+    'k': ['iI', 'oO', 'jJ', 'kK', 'lL', 'mM', ',;'], // 6
+    'K': ['iI', 'oO', 'jJ', 'kK', 'lL', 'mM', ',;'], // 6
+    'l': ['oO', 'pP', 'kK', 'lL', ':;', ',<', '.>'], // 6
+    'L': ['oO', 'pP', 'kK', 'lL', ':;', ',<', '.>'], // 6
+    ':': ['pP', '[{', 'lL', ':;', '\'"', '.>', '?/'], // 6
+    ';': ['pP', '[{', 'lL', ':;', '\'"', '.>', '?/'], // 6
+    '\'': ['[{', ']}', ':;', '\'"', null, '?/', null], // 5
+    '"': ['[{', ']}', ':;', '\'"', null, '?/', null], // 5
+    'z': ['aA', 'sS', null, 'zZ', 'xX', null, null], // 4
+    'Z': ['aA', 'sS', null, 'zZ', 'xX', null, null], // 4
+    'x': ['sS', 'dD', 'zZ', 'xX', 'cC', null, null], // 4
+    'X': ['sS', 'dD', 'zZ', 'xX', 'cC', null, null], // 4
+    'c': ['dD', 'fF', 'xX', 'cC', 'vV', null, null], // 4
+    'C': ['dD', 'fF', 'xX', 'cC', 'vV', null, null], // 4
+    'v': ['fF', 'gG', 'cC', 'vV', 'bB', null, null], // 4
+    'V': ['fF', 'gG', 'cC', 'vV', 'bB', null, null], // 4
+    'b': ['gG', 'hH', 'vV', 'bB', 'nN', null, null], // 4
+    'B': ['gG', 'hH', 'vV', 'bB', 'nN', null, null], // 4
+    'n': ['hH', 'jJ', 'bB', 'nN', 'mM', null, null], // 4
+    'N': ['hH', 'jJ', 'bB', 'nN', 'mM', null, null], // 4
+    'm': ['jJ', 'kK', 'nN', 'mM', ',<', null, null], // 4
+    'M': ['jJ', 'kK', 'nN', 'mM', ',<', null, null], // 4
+    ',': ['kK', 'lL', 'mM', ',<', '.>', null, null], // 4
+    '<': ['kK', 'lL', 'mM', ',<', '.>', null, null], // 4
+    '.': ['lL', ':;', ',<', '.>', '/?', null, null], // 4
+    '>': ['lL', ':;', ',<', '.>', '/?', null, null], // 4
+    '/': [':;', '\'"', '.>', '/?', null, null, null], // 3
+    '?': [':;', '\'"', '.>', '/?', null, null, null] // 3
+}, 4.571428571), // Average number of neighbors.
+</pre>
+                                    </div>
+                                </dd>
+                                
+                                <dt>averageDegree</dt>
+                                <dd>The average number of neighbors for each key (excluding the key itself).</dd>
+                            </dl>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3><a id="areAdjacent"></a>Keyboard.areAdjacent</h3>
+            
+            <p>This method checks whether two key are adjacent in the keyboard.</p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+<pre class="prettyprint">
+keyboard = new Keyboard(adjacencyList, averageDegree);
+keyboard.areAdjacent(a, b);
+</pre>
+            </div>
+        </div>
+            
+        <div class="container">
+            <table class="table table-gray">
+                <tbody>
+                    <tr>
+                        <th>Parameters</th>
+                        <td>
+                            <dl>
+                                <dt>a</dt>
+                                <dd>The first character (a single character).</dd>
+                                <dt>b</dt>
+                                <dd>The second character (a single character).</dd>
+                            </dl>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Returns</th>
+                        <td><code>true</code> if and only if the characters <code>a</code> and <code>b</code> are adjacent in the keyboard.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+        <div class="container">
+            <p>
+				&copy; 2013 - 2014
+				<a href="http://davidstutz.de">David Stutz</a> - <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</a>
+			</p>
+        </div>
+    </body>
+</html>

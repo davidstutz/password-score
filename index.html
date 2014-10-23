@@ -6,10 +6,10 @@
         
         <script type="text/javascript" src="docs/js/jquery.js"></script>
         <script type="text/javascript" src="docs/js/jquery.tmpl.js"></script>
-        <script type="text/javascript" src="dist/js/keyboard.js"></script>
-        <script type="text/javascript" src="dist/js/score.js"></script>
+        <script type="text/javascript" src="dist/js/password-score.js"></script>
+        <script type="text/javascript" src="dist/js/password-score-options.js"></script>
         <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">
+        <script type="text/javascript">
             MathJax.Hub.Config({
                 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
             });
@@ -24,6 +24,7 @@
         <div class="container">
             <ul class="nav nav-pills">
                 <li class="active"><a href="#">Demo</a></li>
+                <li><a href="api.html">API</a></li>
                 <li><a href="docs.html">Documentation</a></li>
                 <li><a href="tests/SpecRunner.html" target="_blank">Tests</a></li>
             </ul>
@@ -106,61 +107,23 @@
             }
         
             $(document).ready(function() {
-                $.when(
-                        $.getJSON(dictionaries['dictionaries']['en']),
-                        $.getJSON(dictionaries['dictionaries']['de']),
-                        $.getJSON(dictionaries['last']),
-                        $.getJSON(dictionaries['male']),
-                        $.getJSON(dictionaries['female']),
-                        $.getJSON(dictionaries['cities']),
-                        $.getJSON(dictionaries['passwords']),
-                        $.getJSON(dictionaries['countries']['en']),
-                        $.getJSON(dictionaries['countries']['de'])
-                ).then(function(dictEN, dictDE, last, male, female, cities, passwords, countriesEN, countriesDE) {
-                    var options = [
-                        {'type': 'dictionary', 'dictionary': dictEN[0], 'key': 'en'},
-                        {'type': 'dictionary', 'dictionary': dictDE[0], 'key': 'de'},
-                        {'type': 'dictionary', 'dictionary': passwords[0], 'key': 'passwords'},
-                        {'type': 'dictionary', 'dictionary': last[0], 'key': 'last'},
-                        {'type': 'dictionary', 'dictionary': male[0], 'key': 'male'},
-                        {'type': 'dictionary', 'dictionary': female[0], 'key': 'female'},
-                        {'type': 'dictionary', 'dictionary': cities[0], 'key': 'cities'},
-                        {'type': 'dictionary', 'dictionary': countriesEN[0], 'key': 'countriesen'},
-                        {'type': 'dictionary', 'dictionary': countriesDE[0], 'key': 'countriesde'},
-                        {'type': 'leet', 'dictionary': dictEN[0], 'key': 'leeten'},
-                        {'type': 'leet', 'dictionary': dictDE[0], 'key': 'leetde'},
-                        {'type': 'leet', 'dictionary': last[0], 'key': 'leetlast'},
-                        {'type': 'leet', 'dictionary': male[0], 'key': 'leetmale'},
-                        {'type': 'leet', 'dictionary': female[0], 'key': 'leetfemale'},
-                        {'type': 'leet', 'dictionary': cities[0], 'key': 'leetcities'},
-                        {'type': 'leet', 'dictionary': countriesEN[0], 'key': 'leetcountriesen'},
-                        {'type': 'leet', 'dictionary': countriesDE[0], 'key': 'leetcountriesde'},
-                        {'type': 'keyboard', 'keyboard': QWERTY, 'key': 'qwerty'},
-                        {'type': 'keyboard', 'keyboard': QWERTZ, 'key': 'qwertz'},
-                        {'type': 'keyboard', 'keyboard': Numpad, 'key': 'numpad'},
-                        {'type': 'repetition', 'key': 'repetition'},
-                        {'type': 'sequences', 'key': 'sequences'},
-                        {'type': 'dates', 'key': 'dates'}
-                    ];
-                    
-                    $('#score').attr('disabled', false).removeClass('disabled');
-                    
-                    $('#score').on('click', function() {
-                    
-                        var password = $('#password').val();
-                        var score = new Score(password);
+                
+                $('#score').attr('disabled', false).removeClass('disabled');
 
-                        var entropy = score.calculateEntropyScore(options);
-                        
-                        renderResult(score);
-                    });
-                    
-                    $('.password').on('click', function(event) {
-                        event.preventDefault();
-                        
-                        $('#password').val($(this).data('value'));
-                        $('#score').click();
-                    });
+                $('#score').on('click', function() {
+
+                    var password = $('#password').val();
+                    var score = new Score(password);
+                    var entropy = score.calculateEntropyScore();
+
+                    renderResult(score);
+                });
+
+                $('.password').on('click', function(event) {
+                    event.preventDefault();
+
+                    $('#password').val($(this).data('value'));
+                    $('#score').click();
                 });
             });
         </script>
@@ -169,7 +132,7 @@
 				<b>See how to use Password Score by having a look on several <a href="https://github.com/davidstutz/bootstrap-strength-meter">Strength Meters for Twitter Bootstrap</a>.</b>
 			</p>
             <p class="alert alert-info">
-                Enter a password. <b>Password Score</b> will give a realistic estimation of its strength expressed in entropy. Let $h$ be the entropy of the password, then a cracker does not need to try more than $2^h$ different passwords before finding the correct one.
+                <b>Enter a password or click on one of the common passwords below</b>. Password Score will give a realistic estimation of its strength expressed in entropy. Let $h$ be the entropy of the password, then a cracker does not need to try more than $2^h$ different passwords before finding the correct one.
             </p>
         </div>
         <div class="container">

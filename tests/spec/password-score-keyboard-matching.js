@@ -1,6 +1,7 @@
 describe('Keyboard matching', function() {
     
-    var keyboard = QWERTY.keyboard;
+    var keyboardScore = new Score('admin123');
+    var keyboard = keyboardScore.keyboards.QWERTY.keyboard;
     var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     
     for (var k = 0; k < 52; k++) {
@@ -13,13 +14,13 @@ describe('Keyboard matching', function() {
 
             do {
                 next = keyboard[password[password.length - 1]][Math.floor(Math.random()*(keyboard[password[password.length - 1]].length - 1))];
-            } while (next === null || next === undefined || ! QWERTY.areAdjacent(password[password.length - 1], next));
+            } while (next === null || next === undefined || ! keyboardScore.keyboards.QWERTY.areAdjacent(password[password.length - 1], next));
             
             password += next[0];
         }
         
         var score = new Score(password);
-        var keyMatches = score.collectKeyboardMatches(QWERTY);
+        var keyMatches = score.collectKeyboardMatches(keyboardScore.keyboards.QWERTY);
         
         it ('[keyboard] "' + password + '" has one keyboard match', function() {
             expect(keyMatches.length).toBe(1);
@@ -43,13 +44,13 @@ describe('Keyboard matching', function() {
 
             do {
                 next = keyboard[password[password.length - 1]][Math.floor(Math.random()*(keyboard[password[password.length - 1]].length - 1))];
-            } while (next === null || next === undefined || ! QWERTY.areAdjacent(password[password.length - 1], next));
+            } while (next === null || next === undefined || ! keyboardScore.keyboards.QWERTY.areAdjacent(password[password.length - 1], next));
             
             password += next[0];
         }
         
         var score = new Score(password);
-        var keyNoiseMatches = score.collectKeyboardMatches(QWERTY);
+        var keyNoiseMatches = score.collectKeyboardMatches(keyboardScore.keyboards.QWERTY);
         
         it ('[keyboard] "' + password + '" has keyboard matches', function() {
             expect(keyNoiseMatches.length).not.toBe(0);
