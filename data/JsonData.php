@@ -136,9 +136,35 @@ class JsonData {
         echo json_encode($array, JSON_UNESCAPED_UNICODE);
 	}
     
+    /**
+     * Create a JSON list of passwords.
+     * 
+     * @param   string  locale
+     * @param   string  ext
+     */
+    public function createPasswordList($file, $ext = 'txt') {
+        $handle = fopen($this->_input . DIRECTORY_SEPARATOR . $file . '.' . $ext, 'r');
+        
+        $array = array();
+        
+        if (FALSE === $handle) {
+            throw new Exception('Could not read file.');
+        }
+        
+        while (FALSE !== ($buffer = fgets($handle, 4096))) {
+            $buffer = trim($buffer);
+            
+            if (!empty($buffer)) {
+                $array[] = $buffer;
+            }
+        }
+        
+        fclose($handle);
+        return json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
 }
 
 $root = realpath(dirname(__FILE__));
-$jsonData = new JsonData($root . DIRECTORY_SEPARATOR . 'raw');
+$jsonData = new JsonData($root . DIRECTORY_SEPARATOR . 'dictionaries' . DIRECTORY_SEPARATOR . 'raw');
 // Will result in log(rank) = 4 FOR ALL countries.
 echo $jsonData->createJsonCountryDictionary(100000, 'countries-en', 'txt');

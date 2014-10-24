@@ -1,0 +1,23 @@
+{
+  "name": "password-score",
+  "description": "JavaScript library used to give realistic estimates of the strength of a password.",
+  "homepage": "https://github.com/davidstutz/password-score",
+  "version": "1.0.0",
+  "keywords": [
+      "js",
+      "password"
+  ],
+  "main": [
+    "./dist/js/password-score.js",
+    "./dist/js/password-score-options.js"
+  ],
+  "ignore": [
+    "data/.*",
+    "docs/.*",
+    "*.html",
+    "*.git*",
+    "*.md",
+    "*.png",
+    "*.php"
+  ]
+}

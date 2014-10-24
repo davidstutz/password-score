@@ -19,115 +19,115 @@
         <a href="https://github.com/davidstutz/password-score"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
         <div class="container">
             <h1>Password Score</h1>
-        </div>
-        <hr>
-        <div class="container">
+            
+            <hr>
             <ul class="nav nav-pills">
                 <li class="active"><a href="#">Demo</a></li>
+                <li><a href="statistics.html">Statistics</a></li>
                 <li><a href="api.html">API</a></li>
                 <li><a href="docs.html">Documentation</a></li>
                 <li><a href="tests/SpecRunner.html" target="_blank">Tests</a></li>
             </ul>
-        </div>
-        <hr>
-        <script type="text/javascript">
+            <hr>
             
-            var dictionaries = {
-                'dictionaries': {
-                    'en': 'data/json/en.json',
-                    'de': 'data/json/de.json'
-                },
-                'countries': {
-                    'en' : 'data/json/countries-en.json',
-                    'de': 'data/json/countries-de.json'
-                },
-                'passwords': 'data/json/passwords.json',
-                'last': 'data/json/last.json',
-                'male': 'data/json/male.json',
-                'female': 'data/json/female.json',
-                'cities': 'data/json/cities.json'
-            };
-    
-            var colors = [
-                'red',
-                'blue',
-                'yellow',
-                'green'
-            ];
-            
-            function renderResult(score) {
-                var $container = $('.result');
-                var $ul = $('ul', $container).html('');
-                var $crack = $('.crack', $container).text('');
-                
-                $.template('match', '<li><span class="result-match">${match}</span><span class="result-entropy">${entropy}</span><span class="result-description">${description}</span></li>');
-                $.template('sum', '<li><span class="result-match">&sum;</span><span class="result-entropy">${entropy}</span></li>');
-                
-                var matches = score.cache.minimumMatches.reverse();
-                for (var i = 0; i < matches.length; i++) {
-                    
-                    $.tmpl('match', {
-                        match: matches[i].pattern,
-                        entropy: matches[i].entropy.toFixed(2),
-                        description: ''
+            <script type="text/javascript">
+
+                var dictionaries = {
+                    'dictionaries': {
+                        'en': 'data/json/en.json',
+                        'de': 'data/json/de.json'
+                    },
+                    'countries': {
+                        'en' : 'data/json/countries-en.json',
+                        'de': 'data/json/countries-de.json'
+                    },
+                    'passwords': 'data/json/passwords.json',
+                    'last': 'data/json/last.json',
+                    'male': 'data/json/male.json',
+                    'female': 'data/json/female.json',
+                    'cities': 'data/json/cities.json'
+                };
+
+                var colors = [
+                    'red',
+                    'blue',
+                    'yellow',
+                    'green'
+                ];
+
+                function renderResult(score) {
+                    var $container = $('.result');
+                    var $ul = $('ul', $container).html('');
+                    var $crack = $('.crack', $container).text('');
+
+                    $.template('match', '<li><span class="result-match">${match}</span><span class="result-entropy">${entropy}</span><span class="result-description">${description}</span></li>');
+                    $.template('sum', '<li><span class="result-match">&sum;</span><span class="result-entropy">${entropy}</span></li>');
+
+                    var matches = score.cache.minimumMatches.reverse();
+                    for (var i = 0; i < matches.length; i++) {
+
+                        $.tmpl('match', {
+                            match: matches[i].pattern,
+                            entropy: matches[i].entropy.toFixed(2),
+                            description: ''
+                        }).appendTo($ul);
+                    }
+
+                    $.tmpl('sum', {
+                        entropy: score.cache.entropy.toFixed(2)
                     }).appendTo($ul);
-                }
-                
-                $.tmpl('sum', {
-                    entropy: score.cache.entropy.toFixed(2)
-                }).appendTo($ul);
-                
-                var cores = 4;
-                var timeToCrack = score.calculateAverageTimeToCrack(score.cache.entropy, cores);
-                var unit = 'seconds';
-                
-                if (timeToCrack > 60) {
-                    timeToCrack /= 60;
-                    unit = 'minutes';
-                    
+
+                    var cores = 4;
+                    var timeToCrack = score.calculateAverageTimeToCrack(score.cache.entropy, cores);
+                    var unit = 'seconds';
+
                     if (timeToCrack > 60) {
                         timeToCrack /= 60;
-                        unit = 'hours';
+                        unit = 'minutes';
 
-                        if (timeToCrack > 24) {
-                            timeToCrack /= 24;
-                            unit = 'days';
-                            
-                            if (timeToCrack > 365) {
-                                timeToCrack /= 365;
-                                unit = 'years';
+                        if (timeToCrack > 60) {
+                            timeToCrack /= 60;
+                            unit = 'hours';
+
+                            if (timeToCrack > 24) {
+                                timeToCrack /= 24;
+                                unit = 'days';
+
+                                if (timeToCrack > 365) {
+                                    timeToCrack /= 365;
+                                    unit = 'years';
+                                }
                             }
                         }
                     }
+
+                    $crack.text('Cracked on average within ' + timeToCrack.toFixed(2) + ' ' + unit + ' using ' + cores + ' parallel cores ...');
+
+                    $container.show();
                 }
-                
-                $crack.text('Cracked on average within ' + timeToCrack.toFixed(2) + ' ' + unit + ' using ' + cores + ' parallel cores ...');
-                
-                $container.show();
-            }
-        
-            $(document).ready(function() {
-                
-                $('#score').attr('disabled', false).removeClass('disabled');
 
-                $('#score').on('click', function() {
+                $(document).ready(function() {
 
-                    var password = $('#password').val();
-                    var score = new Score(password);
-                    var entropy = score.calculateEntropyScore();
+                    $('#score').attr('disabled', false).removeClass('disabled');
 
-                    renderResult(score);
+                    $('#score').on('click', function() {
+
+                        var password = $('#password').val();
+                        var score = new Score(password);
+                        var entropy = score.calculateEntropyScore();
+
+                        renderResult(score);
+                    });
+
+                    $('.password').on('click', function(event) {
+                        event.preventDefault();
+
+                        $('#password').val($(this).data('value'));
+                        $('#score').click();
+                    });
                 });
+            </script>
 
-                $('.password').on('click', function(event) {
-                    event.preventDefault();
-
-                    $('#password').val($(this).data('value'));
-                    $('#score').click();
-                });
-            });
-        </script>
-        <div class="container">
 			<p class="alert alert-info">
 				<b>See how to use Password Score by having a look on several <a href="https://github.com/davidstutz/bootstrap-strength-meter">Strength Meters for Twitter Bootstrap</a>.</b>
 			</p>
@@ -151,7 +151,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control" id="password" placeholder="Enter your password..." />
                     <span class="input-group-btn">
-                        <button class="btn btn-primary disabled" id="score" type="button" disabled >Score</button>
+                        <button class="btn btn-primary disabled" id="score" type="button" disabled >Score!</button>
                     </span>
                 </div>
             </div>

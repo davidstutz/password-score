@@ -4,18 +4,16 @@ Password Score is a javascript library for estimating password security in the m
 
 Estimating the time to crack is still to be implemented. In addition there is still some work to do concerning documentation and the demonstration site.
 
-# Demonstration
-
-A demonstration and a short introduction of the library can be found [here](http://davidstutz.github.io/password-score/). You may enter an arbitrary password and Password Score will score this password based on english and german dictionaries, a list of common passwords, country and city names, female and male first names as well as last names. In addition, Password Score will search for keyboard patterns, sequences and repetitions. Based on this score, Password Score will make an estimation of the average time to crack when using four cores in parallel.
+Demonstration and documentation: [http://davidstutz.github.io/password-score/](http://davidstutz.github.io/password-score/).
 
 ## Data Sources
 
-* `cities.txt`: [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/); [http://download.geonames.org/export/dump/](http://download.geonames.org/export/dump/)
-* `en.txt`/`de.txt`: [Creative Commons – Attribution / ShareAlike 3.0 license](http://creativecommons.org/licenses/by-sa/3.0/) ; [http://invokeit.wordpress.com/frequency-word-lists/](http://invokeit.wordpress.com/frequency-word-lists/)
-* `passwords.txt`: [https://xato.net/passwords/more-top-worst-passwords/](https://xato.net/passwords/more-top-worst-passwords/)
-* `female.txt`, `male.txt` and `last.txt`: [http://deron.meranda.us/data/](http://deron.meranda.us/data/)
-* `countries-en`/`countries-de.txt`: [http://www.countries-list.info/](http://www.countries-list.info/)
-
+* `cities.txt`: [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/); [http://download.geonames.org/export/dump/](http://download.geonames.org/export/dump/).
+* `en.txt`/`de.txt`: [Creative Commons – Attribution / ShareAlike 3.0 license](http://creativecommons.org/licenses/by-sa/3.0/) ; [http://invokeit.wordpress.com/frequency-word-lists/](http://invokeit.wordpress.com/frequency-word-lists/).
+* `passwords.txt`: [https://xato.net/passwords/more-top-worst-passwords/](https://xato.net/passwords/more-top-worst-passwords/).
+* `female.txt`, `male.txt` and `last.txt`: [http://deron.meranda.us/data/](http://deron.meranda.us/data/).
+* `countries-en`/`countries-de.txt`: [http://www.countries-list.info/](http://www.countries-list.info/).
+* `data/passwords/*.txt`: [https://wiki.skullsecurity.org/Passwords](https://wiki.skullsecurity.org/Passwords).
 ## License
 
 Copyright (c) 2013 - 2014 David Stutz

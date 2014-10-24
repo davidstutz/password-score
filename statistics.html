@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Password Score</title>
+        <link rel="stylesheet" type="text/css" href="docs/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="docs/css/prettify.css">
+        
+        <script type="text/javascript" src="docs/js/jquery.js"></script>
+        <script type="text/javascript" src="docs/js/prettify.js"></script>
+        <script type="text/javascript" src="dist/js/password-score.js"></script>
+        <script type="text/javascript" src="dist/js/password-score-options.js"></script>
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript">
+            MathJax.Hub.Config({
+                tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+            });
+            
+            $(document).ready(function() {
+                window.prettyPrint() && prettyPrint();
+            });
+        </script>
+        
+    </head>
+    <body>
+        <a href="https://github.com/davidstutz/password-score"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+        <div class="container">
+            <h1>Password Score</h1>
+            
+            <hr>
+            <ul class="nav nav-pills">
+                <li><a href="index.html">Demo</a></li>
+                <li class="active"><a href="#">Statistics</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="docs.html">Documentation</a></li>
+                <li><a href="tests/SpecRunner.html" target="_blank">Tests</a></li>
+            </ul>
+            <hr>
+            
+            <p class="alert alert-info">
+                Use the form below to select a password list and click Calculate! to get some statistics. <b>Depending on the chosen password list this may take some <u>really long time</u></b> - eventually crashing your browser.
+            </p>
+            
+            <p class="alert alert-warning">
+                Note that the shown progress bar is not functioning yet as the JavaScript code is not running in the background!
+            </p>
+        </div>
+        
+        <div class="stripe">
+            <div class="container">
+                <div class="input-group">
+                    <select class="form-control" id="password-list">
+                        <option value="cain.json">cain.txt</option>
+                        <option value="hotmail.json" selected>hotmail.txt</option>
+                        <option value="john.json">john.txt</option>
+                        <option value="myspace.json">myspace.txt</option>
+                        <option value="phpbb.json">phpbb.txt</option>
+                    </select>
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" id="password-list-calculate" type="button">Calculate!</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('#password-list-calculate').on('click', function() {
+                        $(this).attr('disabled', true);
+                        
+                        var list = $('#password-list').val();
+                        
+                        var password_lists = [
+                            'cain.json',
+                            'hotmail.json',
+                            'john.jsom',
+                            'myspace.json',
+                            'phpbb.json'
+                        ];
+                        
+                        if (password_lists.indexOf(list) >= 0) {
+                            
+                            $.when($.getJSON('data/json/' + list)).then(function(passwords) {
+                                
+                                var sum = 0;
+                                var count = 0;
+
+                                var width = 0.0;
+
+                                for (var i = 0; i < passwords.length; i++) {
+                                    var score = new Score(passwords[i]);
+                                    var entropy = score.calculateEntropyScore();
+                                    
+                                    var percentage = (1.0*i)/passwords.length;
+                                    var width_percentasge = (width + 1.0)/100;
+                                    
+                                    console.log(percentage);
+                                    
+                                    if (percentage > width_percentasge) {
+                                        width += 1.0;
+                                        
+                                        $('#password-list-progress').css('width', width + '%');
+                                    }
+                                    
+                                    if (isFinite(entropy)) {
+                                        sum += entropy;
+                                        count++;
+                                    }
+                                }
+                                
+                                $('#password-list-result').text(sum/count);
+                            });
+                        }
+                        
+                        $(this).attr('disabled', false);
+                    });
+                });
+            </script>
+            
+            <div class="row">
+                <div class="col-sm-2">
+                    <b>Progress:</b>
+                </div>
+                <div class="col-sm-10">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success" id="password-list-progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="password-list-result" style="font-size:72px;text-align:center;">
+                
+            </div>
+            
+        </div>
+        <hr>
+        <div class="container">
+            <p>
+				&copy; 2013 - 2014
+				<a href="http://davidstutz.de">David Stutz</a> - <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</a>
+			</p>
+        </div>
+    </body>
+</html>
