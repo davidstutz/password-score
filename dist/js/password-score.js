@@ -445,13 +445,11 @@ Score.prototype = {
     collectMatches: function(options, append) {
         
         // Default parameters: use default options or append to default options.
-        options = options || [];
-        append = append || true;
+        options = (options === undefined) ? [] : options;
+        append = (append === undefined) ? true : append;
         
-        var defaultOptions = this.options || [];
-        
-        if (append === true) {
-            options = options.concat(defaultOptions);
+        if (append === true && this.options !== undefined) {
+            options = options.concat(this.options);
         }
         
         var matches = [];

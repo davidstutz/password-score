@@ -41,7 +41,7 @@
             </p>
             
             <p class="alert alert-warning">
-                Note that the shown progress bar is not functioning yet as the JavaScript code is not running in the background!
+                Note that the progress is currently only shown in the console!
             </p>
         </div>
         
@@ -80,7 +80,7 @@
                         
                         if (password_lists.indexOf(list) >= 0) {
                             
-                            $.when($.getJSON('data/json/' + list)).then(function(passwords) {
+                            $.when($.getJSON('data/passwords/json/' + list)).then(function(passwords) {
                                 
                                 var sum = 0;
                                 var count = 0;
@@ -94,13 +94,7 @@
                                     var percentage = (1.0*i)/passwords.length;
                                     var width_percentasge = (width + 1.0)/100;
                                     
-                                    console.log(percentage);
-                                    
-                                    if (percentage > width_percentasge) {
-                                        width += 1.0;
-                                        
-                                        $('#password-list-progress').css('width', width + '%');
-                                    }
+                                    console.log(percentage + ' - ' + passwords[i] + ': ' + entropy);
                                     
                                     if (isFinite(entropy)) {
                                         sum += entropy;
@@ -108,6 +102,7 @@
                                     }
                                 }
                                 
+                                $('#password-list-result-headline').text('Average Score');
                                 $('#password-list-result').text(sum/count);
                             });
                         }
@@ -117,19 +112,9 @@
                 });
             </script>
             
-            <div class="row">
-                <div class="col-sm-2">
-                    <b>Progress:</b>
-                </div>
-                <div class="col-sm-10">
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-success" id="password-list-progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-                            
-                        </div>
-                    </div>
-                </div>
+            <div id="password-list-result-headline" style="font-size:36px;text-align:center;">
+                
             </div>
-            
             <div id="password-list-result" style="font-size:72px;text-align:center;">
                 
             </div>
@@ -138,9 +123,9 @@
         <hr>
         <div class="container">
             <p>
-				&copy; 2013 - 2014
-				<a href="http://davidstutz.de">David Stutz</a> - <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</a>
-			</p>
+                &copy; 2013 - 2014
+                <a href="http://davidstutz.de">David Stutz</a> - <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License</a>
+            </p>
         </div>
     </body>
 </html>
