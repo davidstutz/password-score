@@ -14,6 +14,7 @@ Demonstration and documentation: [http://davidstutz.github.io/password-score/](h
 * `female.txt`, `male.txt` and `last.txt`: [http://deron.meranda.us/data/](http://deron.meranda.us/data/).
 * `countries-en`/`countries-de.txt`: [http://www.countries-list.info/](http://www.countries-list.info/).
 * `data/passwords/*.txt`: [https://wiki.skullsecurity.org/Passwords](https://wiki.skullsecurity.org/Passwords).
+
 ## License
 
 Copyright (c) 2013 - 2014 David Stutz
