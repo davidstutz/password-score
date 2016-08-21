@@ -1,5 +1,7 @@
 # Password Score
 
+[![Build Status](https://travis-ci.org/davidstutz/password-score.svg?branch=master)](https://travis-ci.org/davidstutz/password-score)
+
 Password Score is a javascript library for estimating password security in the means of entropy. Beneath using dictionaries, the library searches for common passwords or names and scans for patterns like dates in any format, sequences, repetitions or keyboard patterns. Based on the found patterns, the entropy may be used to estimate the average time needed to crack the password.
 
 Estimating the time to crack is still to be implemented. In addition there is still some work to do concerning documentation and the demonstration site.
