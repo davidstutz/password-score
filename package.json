@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/davidstutz/password-score/issues"
   },
-  "homepage": "https://github.com/davidstutz/password-score",
+  "homepage": "http://davidstutz.de/password-score",
   "scripts": {
     "test": "karma start tests/karma.conf.js --single-run"
   },

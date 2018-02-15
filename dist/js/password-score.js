@@ -49,6 +49,10 @@ Score.prototype = {
     UPPER: 26,
     NUMBER: 10,
     PUNCTUATION: 34,
+    OTHER: 34, // this includes special characters, umlauts (i.e. diacritics) etc.
+               // it's not easy to get a reasonable count of these (which are commonly used around the world)
+               // see e.g. https://en.wikipedia.org/wiki/Diaeresis_(diacritic)
+               // therefore, these are treated like punctuation
     
     DAYS: 31,
     MONTHS: 31,
@@ -110,7 +114,9 @@ Score.prototype = {
         upper: /[A-Z]+/,
         upperOnly: /^[A-Z]+$/,
         upperFirst: /^[A-Z]+[A-Za_z]*$/,
-        upperFirstOnly: /^[A-Z]{1}[a-z]+$/
+        upperFirstOnly: /^[A-Z]{1}[a-z]+$/,
+        other: /[^\^°!"§\$%&\/\(\)=\?\\\.:,;\-_#'\+~\*<>\|\[\]\{\}`´0-9a-zA-Z]+/,
+        otherOnly: /^[^\^°!"§\$%&\/\(\)=\?\\\.:,;\-_#'\+~\*<>\|\[\]\{\}`´0-9a-zA-Z]+$/,
     },
     
     keyboards: {
@@ -412,21 +418,30 @@ Score.prototype = {
      */
     calculateBruteForceEntropy: function() {
         var base = 0;
-
+        var any = false;
+        
         if (this.regex['lower'].test(this.password)) {
             base += this.LOWER;
+            any = true;
         }
 
         if (this.regex['upper'].test(this.password)) {
             base += this.UPPER;
+            any = true;
         }
 
         if (this.regex['number'].test(this.password)) {
             base += this.NUMBER;
+            any = true;
         }
 
         if (this.regex['punctuation'].test(this.password)) {
             base += this.PUNCTUATION;
+            any = true;
+        }
+        
+        if (this.regex['other'].test(this.password)) {
+            base += this.OTHER;
         }
         
         var naiveEntropy = this.lg(base)*this.password.length;
@@ -496,7 +511,7 @@ Score.prototype = {
             
             matches = matches.concat(optionMatches);
         }
-        
+        console.log(matches)
         return matches;
     },
 
@@ -811,7 +826,7 @@ Score.prototype = {
                     currentTurns++;
                 }
             }
-            else {
+            else if (currentPath.length > 1) { // only consider sequences longer than one
                 matches[matches.length] = {
                     pattern: currentPath,
                     entropy: this.calculateKeyboardEntropy(currentPath, currentTurns, keyboard),
@@ -826,7 +841,7 @@ Score.prototype = {
         }
         
         // Remember to add the last path.
-        if (currentPath.length > 0) {
+        if (currentPath.length > 1) {
             matches[matches.length] = {
                 pattern: currentPath,
                 entropy: this.calculateKeyboardEntropy(currentPath, currentTurns, keyboard),

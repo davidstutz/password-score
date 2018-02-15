@@ -6,7 +6,7 @@ Password Score is a javascript library for estimating password security in the m
 
 Estimating the time to crack is still to be implemented. In addition there is still some work to do concerning documentation and the demonstration site.
 
-Demonstration and documentation: [http://davidstutz.github.io/password-score/](http://davidstutz.github.io/password-score/).
+Demonstration and documentation: [http://davidstutz.de/password-score](http://davidstutz.de/password-score).
 
 Check out [Bootstrap Strength Meter](https://github.com/davidstutz/bootstrap-strength-meter): a Twitter Bootstrap plugin demonstrating how to use Password Score to visualize password strength.
 

@@ -1,7 +1,7 @@
 {
   "name": "password-score",
   "description": "JavaScript library used to give realistic estimates of the strength of a password.",
-  "homepage": "https://github.com/davidstutz/password-score",
+  "homepage": "http://davidstutz.de/password-score",
   "version": "1.0.0",
   "keywords": [
       "js",
