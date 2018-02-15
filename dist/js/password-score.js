@@ -511,7 +511,7 @@ Score.prototype = {
             
             matches = matches.concat(optionMatches);
         }
-        console.log(matches)
+        
         return matches;
     },
 
@@ -617,7 +617,7 @@ Score.prototype = {
                     if (dictionary[reversed]) {
                         matches[matches.length] = {
                             pattern: original, 
-                            entropy: this.calculateReversedDictionaryEntropy(original, string, dictionary[string]),
+                            entropy: this.calculateReversedDictionaryEntropy(original, string, dictionary[reversed]),
                             start: i,
                             end: j,
                             type: 'dictionary'
@@ -834,6 +834,12 @@ Score.prototype = {
                     end: i,
                     type: 'keyboard'
                 };
+                
+                currentPath = this.password[i + 1];
+                currentTurns = 0;
+                currentStart = i + 1;
+            }
+            else {
                 currentPath = this.password[i + 1];
                 currentTurns = 0;
                 currentStart = i + 1;
