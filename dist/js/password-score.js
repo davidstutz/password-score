@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013 - 2014 David Stutz
+ * Copyright (c) 2013 - 2018 David Stutz
  * License: https://github.com/davidstutz/password-score
  */
 
@@ -759,7 +759,6 @@ Score.prototype = {
      * @return {array}
      */
     collectLeetSpeakSubstitutions: function() {
-        var subs = [];
         
         var leet = {};
         for (var char in this.leet) {
