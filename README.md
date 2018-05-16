@@ -10,6 +10,8 @@ Demonstration and documentation: [http://davidstutz.de/password-score](http://da
 
 Check out [Bootstrap Strength Meter](https://github.com/davidstutz/bootstrap-strength-meter): a Twitter Bootstrap plugin demonstrating how to use Password Score to visualize password strength.
 
+Consider [donating](https://davidstutz.de/donate/) to support development.
+
 ## Data Sources
 
 * `cities.txt`: [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/); [http://download.geonames.org/export/dump/](http://download.geonames.org/export/dump/).
