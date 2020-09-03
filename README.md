@@ -1,12 +1,10 @@
 # Password Score
 
-[![Build Status](https://travis-ci.org/davidstutz/password-score.svg?branch=master)](https://travis-ci.org/davidstutz/password-score)
-
 Password Score is a javascript library for estimating password security in the means of entropy. Beneath using dictionaries, the library searches for common passwords or names and scans for patterns like dates in any format, sequences, repetitions or keyboard patterns. Based on the found patterns, the entropy may be used to estimate the average time needed to crack the password.
 
 Estimating the time to crack is still to be implemented. In addition there is still some work to do concerning documentation and the demonstration site.
-
-Demonstration and documentation: [http://davidstutz.de/password-score](http://davidstutz.de/password-score).
+ 
+Demonstration and documentation: [https://davidstutz.github.io/password-score](https://davidstutz.github.io/password-score).
 
 Check out [Bootstrap Strength Meter](https://github.com/davidstutz/bootstrap-strength-meter): a Twitter Bootstrap plugin demonstrating how to use Password Score to visualize password strength.
 
@@ -23,7 +21,7 @@ Consider [donating](https://davidstutz.de/donate/) to support development.
 
 ## License
 
-Copyright (c) 2013 - 2018 David Stutz
+Copyright (c) 2013 - 2020 David Stutz
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
